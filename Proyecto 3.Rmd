@@ -370,6 +370,7 @@ print(ES.MC)
 
 ## VaR individual por Simulación Monte Carlo Laplace
 ```{r}
-
+print("Holi") 
 ```
 sbsfkjsbjbsbsd
+jwjdwjd
