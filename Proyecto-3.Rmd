@@ -380,3 +380,4 @@ print("Holi")
 ```
 sbsfkjsbjbsbsd
 jwjdwjd
+Los modelos VAR son herramientas estadísticas utilizadas para medir el riesgo de mercado en carteras de activos financieros. Estos modelos permiten estimar la posible pérdida máxima que una cartera podría experimentar en un horizonte temporal determinado, dado un nivel de confianza específico. Existen diferentes enfoques para calcular el VAR, entre ellos el VAR paramétrico, el VAR no paramétrico y el VAR por simulación Monte Carlo. En este análisis, se explorarán estos enfoques utilizando datos históricos de precios de acciones de diversas empresas.
