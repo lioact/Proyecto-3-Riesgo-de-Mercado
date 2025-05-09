@@ -114,6 +114,8 @@ Racional: Citigroup tiene una amplia presencia internacional, especialmente en m
 ------------------------------------------------------------------------------------------- 
 # Parte II. Valor en Riesgo no paramétrico
 
+Bueno, en esta parte vamos a poner las librerias que necesitaremos
+
 **Librerias**
 ```{r, message=FALSE, warning=FALSE}
 library(quantmod)
