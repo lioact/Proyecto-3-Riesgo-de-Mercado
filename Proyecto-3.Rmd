@@ -123,6 +123,7 @@ library(goftest)
 library(corrplot)
 library(fitdistrplus)
 library(dplyr)
+library(VGAM)
 ```
 
 **Emisoras**
@@ -376,11 +377,90 @@ print(ES.MC)
 
 ## VaR individual por Simulación Monte Carlo Laplace
 ```{r}
+library(VGAM)
 
+#Ajustamos distribución Laplace a los rendimientos
+
+# Función para estimar parámetros Laplace
+ajustar_laplace <- function(x) {
+  datos <- x[!is.na(x)]
+  mod <- vglm(datos ~ 1, laplace, trace = FALSE)
+  coef <- Coef(mod)
+  return(coef)
+}
+
+# Estimar parámetros Laplace para cada emisora
+param_laplace <- apply(Rend, 2, ajustar_laplace)
+mu_lap <- param_laplace[1, ]
+b_lap <- param_laplace[2, ]
+```
+
+```{r}
+#Pérdidas
+set.seed(123)
+
+VaR_Laplace_conv <- list()
+
+for (p in 1:m) {
+  mu <- mu_lap[p]
+  b <- b_lap[p]
+  pf <- d1[n, p]  # último precio
+  
+  VaR_sims <- list()
+  
+  for (nsim in numsim) {
+    pl_hist <- numeric(nsim)
+    VaRm <- matrix(NA, nrow = nsim, ncol = length(nc))
+    colnames(VaRm) <- paste0("VaR_", nc * 100, "%")
+    
+    for (j in 1:nsim) {
+      rend_sim <- rlaplace(1, location = mu, scale = b)
+      reval <- pf * (1 + rend_sim)
+      pl <- pf - reval
+      pl_hist[j] <- pl
+      
+      for (i in seq_along(nc)) {
+        VaRm[j, i] <- quantile(pl_hist[1:j], probs = nc[i], na.rm = TRUE)
+      }
+    }
+    
+    VaR_sims[[as.character(nsim)]] <- VaRm
+  }
+  
+  VaR_Laplace_conv[[colnames(Rend)[p]]] <- VaR_sims
+}
+```
+
+```{r}
+#Calculamos promedios de VaR por emisora y simulación
+resVaR_Laplace <- data.frame()
+
+for (emisora in names(VaR_Laplace_conv)) {
+  for (nsim in names(VaR_Laplace_conv[[emisora]])) {
+    matrizVaR <- VaR_Laplace_conv[[emisora]][[nsim]]
+    promedios <- colMeans(matrizVaR, na.rm = TRUE)
+    
+    temp <- data.frame(
+      Emisora = emisora,
+      Simulaciones = as.integer(nsim),
+      Nivel_Confianza = names(promedios),
+      VaR_Promedio = as.numeric(promedios)
+    )
+    
+    resVaR_Laplace <- bind_rows(resVaR_Laplace, temp)
+  }
+}
+
+print(resVaR_Laplace)
 
 
 ```
 
+**Expected Shortfall SM-Laplace**
+```{r}
+ES.MCL <- VaR_ES(VaRm)
+print(ES.MCL)
+```
 Los modelos VAR son herramientas estadísticas utilizadas para medir el riesgo de mercado en carteras de activos financieros. Estos modelos permiten estimar la posible pérdida máxima que una cartera podría experimentar en un horizonte temporal determinado, dado un nivel de confianza específico. Existen diferentes enfoques para calcular el VAR, entre ellos el VAR paramétrico, el VAR no paramétrico y el VAR por simulación Monte Carlo. En este análisis, se explorarán estos enfoques utilizando datos históricos de precios de acciones de diversas empresas.
 
 
