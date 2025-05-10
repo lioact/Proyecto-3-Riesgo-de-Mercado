@@ -1,8 +1,12 @@
 ---
 title: "Proyecto 3 Riesgo de Mercado"
-author: "Hernández Fernández Maria Fernanda"
+author: "Hernández Fernández Maria Fernanda,Rosas Rios Leonardo Daniel,José Domingo Cortes Sandria, Pastrana Basilio Martha Lizeth"
 date: "2025-04-27"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    number_sections: true
+
 ---
 
 # Parte I. Selección de Activos
@@ -110,6 +114,8 @@ Racional: Citigroup tiene una amplia presencia internacional, especialmente en m
 ------------------------------------------------------------------------------------------- 
 # Parte II. Valor en Riesgo no paramétrico
 
+Bueno, en esta parte vamos a poner las librerias que necesitaremos
+
 **Librerias**
 ```{r, message=FALSE, warning=FALSE}
 library(quantmod)
@@ -117,6 +123,7 @@ library(goftest)
 library(corrplot)
 library(fitdistrplus)
 library(dplyr)
+library(VGAM)
 ```
 
 **Emisoras**
@@ -370,6 +377,229 @@ print(ES.MC)
 
 ## VaR individual por Simulación Monte Carlo Laplace
 ```{r}
+library(VGAM)
+
+#Ajustamos distribución Laplace a los rendimientos
+
+# Función para estimar parámetros Laplace
+ajustar_laplace <- function(x) {
+  datos <- x[!is.na(x)]
+  mod <- vglm(datos ~ 1, laplace, trace = FALSE)
+  coef <- Coef(mod)
+  return(coef)
+}
+
+# Estimar parámetros Laplace para cada emisora
+param_laplace <- apply(Rend, 2, ajustar_laplace)
+mu_lap <- param_laplace[1, ]
+b_lap <- param_laplace[2, ]
+```
+
+```{r}
+#Pérdidas
+set.seed(123)
+
+VaR_Laplace_conv <- list()
+
+for (p in 1:m) {
+  mu <- mu_lap[p]
+  b <- b_lap[p]
+  pf <- d1[n, p]  # último precio
+  
+  VaR_sims <- list()
+  
+  for (nsim in numsim) {
+    pl_hist <- numeric(nsim)
+    VaRm <- matrix(NA, nrow = nsim, ncol = length(nc))
+    colnames(VaRm) <- paste0("VaR_", nc * 100, "%")
+    
+    for (j in 1:nsim) {
+      rend_sim <- rlaplace(1, location = mu, scale = b)
+      reval <- pf * (1 + rend_sim)
+      pl <- pf - reval
+      pl_hist[j] <- pl
+      
+      for (i in seq_along(nc)) {
+        VaRm[j, i] <- quantile(pl_hist[1:j], probs = nc[i], na.rm = TRUE)
+      }
+    }
+    
+    VaR_sims[[as.character(nsim)]] <- VaRm
+  }
+  
+  VaR_Laplace_conv[[colnames(Rend)[p]]] <- VaR_sims
+}
+```
+
+```{r}
+#Calculamos promedios de VaR por emisora y simulación
+resVaR_Laplace <- data.frame()
+
+for (emisora in names(VaR_Laplace_conv)) {
+  for (nsim in names(VaR_Laplace_conv[[emisora]])) {
+    matrizVaR <- VaR_Laplace_conv[[emisora]][[nsim]]
+    promedios <- colMeans(matrizVaR, na.rm = TRUE)
+    
+    temp <- data.frame(
+      Emisora = emisora,
+      Simulaciones = as.integer(nsim),
+      Nivel_Confianza = names(promedios),
+      VaR_Promedio = as.numeric(promedios)
+    )
+    
+    resVaR_Laplace <- bind_rows(resVaR_Laplace, temp)
+  }
+}
+
+print(resVaR_Laplace)
+
 
 ```
-sbsfkjsbjbsbsd
+
+**Expected Shortfall SM-Laplace**
+```{r}
+ES.MCL <- VaR_ES(VaRm)
+print(ES.MCL)
+```
+Los modelos VAR son herramientas estadísticas utilizadas para medir el riesgo de mercado en carteras de activos financieros. Estos modelos permiten estimar la posible pérdida máxima que una cartera podría experimentar en un horizonte temporal determinado, dado un nivel de confianza específico. Existen diferentes enfoques para calcular el VAR, entre ellos el VAR paramétrico, el VAR no paramétrico y el VAR por simulación Monte Carlo. En este análisis, se explorarán estos enfoques utilizando datos históricos de precios de acciones de diversas empresas.
+
+
+##Simulación Bootstrapping
+
+```{r}
+
+# Simulación bootstrap multivariada
+RendSim <- matrix(NA, nrow = n, ncol = m)
+Reval <- matrix(NA, nrow = n, ncol = m)
+PL <- matrix(NA, nrow = n, ncol = m)
+colnames(RendSim) <- colnames(Reval) <- colnames(PL) <- colnames(d1)
+
+# Para cada emisora, simula rendimientos y calcula P&L
+for (k in 1:m) {
+  y <- Rend[, k]  # rendimientos históricos de la emisora k
+  PA <- d1[n, k]  # precio actual
+
+  for (j in 1:n) {
+    RendSim[j, k] <- sample(y, 1, replace = TRUE)
+    Reval[j, k] <- PA * (1 + RendSim[j, k])
+    PL[j, k] <- PA - Reval[j, k]
+  }
+}
+
+# Pérdida total del portafolio
+PL_Total <- rowSums(PL, na.rm = TRUE)
+
+#Calcular VaR por Simulación Bootstrap 
+VaR_Bootstrap <- quantile(PL_Total, probs = c(0.90, 0.95, 0.99), na.rm = TRUE)
+print(VaR_Bootstrap)
+```
+
+```{r}
+#Individual
+# Suposiciones: ya tienes Rend calculado como una matriz de rendimientos (n-1 x m)
+# y d1 como la matriz de precios originales (n x m)
+VaRconvergencia <- list()  # para almacenar los resultados
+
+for (s in numsim) {
+
+  VaRLim <- matrix(NA, nrow = s, ncol = m)  # almacenar pérdidas por emisora
+  colnames(VaRLim) <- colnames(d1)
+
+  for (j in 1:s) {
+    
+    PL_sim <- numeric(ncol(d1))  # Pérdida simulada por emisora
+    for (k in 1:ncol(d1)) {
+      y <- Rend[, k]  # rendimientos históricos de emisora k
+      r <- sample(y, 1, replace = TRUE)  # rendimiento simulado
+      PA <- d1[n, k]  # precio actual
+      PL_sim[k] <- PA - (PA * (1 + r))  # pérdida simulada
+    }
+    
+    VaRLim[j, ] <- PL_sim  # guardar pérdidas individuales
+
+  }
+  
+VaR_individual <- apply(VaRLim, 2, quantile, probs = c(0.90, 0.95, 0.99), na.rm = TRUE)
+
+# Mostrar resultados individuales por emisora
+for (k in 1:m) {
+  cat("\nVaR para", colnames(d1)[k], ":\n")
+  print(VaR_individual[, k])
+}
+}
+
+```
+
+```{r}
+#Portafolio
+
+# Suposiciones: ya tienes Rend calculado como una matriz de rendimientos (n-1 x m)
+# y d1 como la matriz de precios originales (n x m)
+VaRconvergencia <- list()  # para almacenar los resultados
+
+for (s in numsim) {
+  
+  VaRLim <- numeric(s)  # almacenar VaR por simulación
+  
+  for (j in 1:s) {
+    
+    PL_sim <- numeric(ncol(d1))  # Pérdida simulada por emisora
+    for (k in 1:ncol(d1)) {
+      y <- Rend[, k]  # rendimientos históricos de emisora k
+      r <- sample(y, 1, replace = TRUE)  # rendimiento simulado
+      PA <- d1[n, k]  # precio actual
+      PL_sim[k] <- PA - (PA * (1 + r))  # pérdida simulada
+    }
+    
+    PL_total <- sum(PL_sim)  # pérdida total del portafolio
+    VaRLim[j] <- PL_total
+  }
+  
+  VaRconvergencia[[as.character(s)]] <- quantile(VaRLim, c(0.90, 0.95, 0.99))
+}
+
+# Mostrar resultados
+for (s in names(VaRconvergencia)) {
+  cat("\nVaR para", s, "simulaciones:\n")
+  print(VaRconvergencia[[s]])
+}
+
+```
+
+
+
+
+#VaR Paramétrico
+
+Rend <- matrix(NA,nrow = n-1, ncol = m)
+colnames(Rend) <- paste0("P", 1:m)
+
+for(k in 1:m){
+  for (j in 1:(n-1)){
+    Rend[j,k] <- d1[j+1,k]/d1[j,k]-1 #discreto
+  }
+}
+```{r}
+f<- qnorm(nc,0,1) #nivel de riesgo con una N(0,1)
+t<- 1 #plazo expresado en días
+volatilidad<- c()
+
+for(k in 1:m){ #en este caso j representa al número de los emisoras
+  volatilidad[k]<- sd(Rend[,k])
+}
+print(f)
+```
+
+```{r}
+VaRp<- c()
+
+for(k in 1:m){
+  VaRp[k]<- d1[n,k]*f*volatilidad[k]*sqrt(t)
+}
+```
+
+
+
+aaaaaaaaaaa vamos a morirrr
+
+
