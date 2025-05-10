@@ -1,129 +1,143 @@
 ---
 title: "Proyecto 3 Riesgo de Mercado"
-author: "Hernández Fernández Maria Fernanda,Rosas Rios Leonardo Daniel,José Domingo Cortes Sandria, Pastrana Basilio Martha Lizeth"
+author: Hernández Fernández Maria Fernanda,Rosas Rios Leonardo Daniel,José Domingo
+  Cortes Sandria, Pastrana Basilio Martha Lizeth
 date: "2025-04-27"
-output: 
+output:
+  pdf_document:
+    toc: true
   html_document:
     toc: true
     number_sections: true
-
 ---
 
-# Parte I. Selección de Activos
+# Introducción 
+
+
+# Selección de Activos
+
+Se construyó un portafolio de inversión compuesto por 20 acciones de compañías pertenecientes al índice S&P 500, seleccionadas de acuerdo con criterios de diversificación sectorial y relevancia económica, para el período comprendido entre enero de 2022 y marzo de 2025. Los datos históricos de precios fueron obtenidos de la plataforma financiera Yahoo Finance. Para cada emisora seleccionada, se proporciona una descripción del sector económico al que pertenece, sus principales actividades operativas, y una justificación del por qué se decidió incluirla en el portafolio, considerando su representatividad en el mercado y su relevancia dentro del análisis de riesgo.
+
+
+
+
 
 **Apple Inc. (AAPL)**
 Sector: Tecnología 
 Principales actividades: diseña, fabrica y comercializa smartphones, ordenadores personales, tabletas, wearables y accesorios en todo el mundo. 
-Racional: Apple es una de las compañías más valiosas y reconocidas globalmente, líder en innovación tecnológica. Su inclusión aporta solidez y exposición a tendencias de consumo premium, innovación y transformación digital.
+Justificación: Apple es una de las compañías más valiosas y reconocidas globalmente, líder en innovación tecnológica. Su inclusión aporta solidez y exposición a tendencias de consumo premium, innovación y transformación digital.
 
 **Microsoft Corp. (MSFT)**
 Sector: Tecnología 
 Principales actividades: desarrolla y da soporte a software, servicios, dispositivos y soluciones en todo el mundo.
-Racional: Microsoft ofrece estabilidad y crecimiento en sectores clave como software empresarial, computación en la nube e inteligencia artificial, siendo una de las empresas tecnológicas más diversificadas y rentables del mundo.
+Justificación: Microsoft ofrece estabilidad y crecimiento en sectores clave como software empresarial, computación en la nube e inteligencia artificial, siendo una de las empresas tecnológicas más diversificadas y rentables del mundo.
  
 **NVIDIA Corp. (NVDA)**
 Sector: Tecnología 
 Principales actividades: NVIDIA Corporation, empresa de infraestructura informática, ofrece soluciones gráficas, de computación y de redes en Estados Unidos, Singapur, Taiwán, China, Hong Kong y a nivel internacional. El segmento de Computación y Redes comprende plataformas informáticas para centros de datos y plataformas de redes de extremo a extremo.
-Racional: NVIDIA lidera sectores estratégicos como inteligencia artificial, centros de datos y gráficos, posicionándola como un actor fundamental en el futuro de la computación, lo que diversifica riesgos tecnológicos y de crecimiento.
+Justificación: NVIDIA lidera sectores estratégicos como inteligencia artificial, centros de datos y gráficos, posicionándola como un actor fundamental en el futuro de la computación, lo que diversifica riesgos tecnológicos y de crecimiento.
 
 **Amazon.com, Inc. (AMZN)**
 Sector: Consumo discrecional
 Principales actividades: se dedica a la venta minorista de productos de consumo, publicidad y servicios de suscripción a través de tiendas físicas y en línea en Norteamérica e internacionalmente. 
-Racional: Amazon domina el comercio electrónico y los servicios en la nube (AWS), sectores en constante expansión, lo que aporta exposición a innovación digital y consumo global al portafolio.
+Justificación: Amazon domina el comercio electrónico y los servicios en la nube (AWS), sectores en constante expansión, lo que aporta exposición a innovación digital y consumo global al portafolio.
 
 **Meta Platforms, Inc. (META)**
 Sector: Servicios de comunicación
 Principales actividades: se dedica al desarrollo de productos que permiten a las personas conectarse y compartir con amigos y familiares a través de dispositivos móviles, computadoras personales, gafas de realidad virtual y mixta, realidad aumentada y wearables en todo el mundo. 
-Racional: Meta es un referente en redes sociales y está invirtiendo fuertemente en tecnologías emergentes como realidad aumentada y metaverso, ofreciendo una mezcla de innovación y liderazgo en comunicación digital.
+Justificación: Meta es un referente en redes sociales y está invirtiendo fuertemente en tecnologías emergentes como realidad aumentada y metaverso, ofreciendo una mezcla de innovación y liderazgo en comunicación digital.
 
 **Alphabet Inc. A (GOOGL)**
 Sector: Servicios de comunicación
 Principales actividades: Ofrece diversos productos y plataformas en Estados Unidos, Europa, Oriente Medio, África, Asia-Pacífico, Canadá y Latinoamérica. Opera a través de los segmentos de Servicios de Google, Google Cloud y Otras Apuestas. 
-Racional: Alphabet, a través de Google y sus filiales, controla gran parte del mercado de búsquedas y publicidad digital, además de innovar en sectores como la nube, inteligencia artificial y automóviles autónomos, lo que garantiza diversificación tecnológica.
+Justificación: Alphabet, a través de Google y sus filiales, controla gran parte del mercado de búsquedas y publicidad digital, además de innovar en sectores como la nube, inteligencia artificial y automóviles autónomos, lo que garantiza diversificación tecnológica.
 
 **Broadcom Inc. (AVGO)**
 Sector: Tecnología 
 Principales actividades: diseña, desarrolla y suministra diversos dispositivos semiconductores, centrándose en dispositivos complejos basados en semiconductores de óxido metálico complementario (MEC) de señal digital y mixta, así como en productos analógicos III-V a nivel mundial. 
-Racional: Broadcom es clave en la industria de semiconductores y comunicaciones, abasteciendo sectores esenciales como 5G, infraestructura de redes y servidores, brindando exposición a tecnología avanzada y crecimiento estructural.
+Justificación: Broadcom es clave en la industria de semiconductores y comunicaciones, abasteciendo sectores esenciales como 5G, infraestructura de redes y servidores, brindando exposición a tecnología avanzada y crecimiento estructural.
 
 **Alphabet Inc. C (GOOG)**
 Sector: Servicios de comunicación
 Principales actividades: ofrece diversos productos y plataformas en Estados Unidos, Europa, Oriente Medio, África, Asia-Pacífico, Canadá y Latinoamérica. Opera a través de los segmentos de Servicios de Google, Google Cloud y Otras Apuestas.
-Racional: La acción clase C de Alphabet proporciona la misma exposición a innovación, publicidad y tecnología global que GOOGL, pero sin derechos de voto, lo que permite diversificar dentro de una misma estructura corporativa.
+Justificación: La acción clase C de Alphabet proporciona la misma exposición a innovación, publicidad y tecnología global que GOOGL, pero sin derechos de voto, lo que permite diversificar dentro de una misma estructura corporativa.
 
 **Tesla, Inc. (TSLA)**
 Sector: Consumo discrecional
 Principales actividades: Tesla, Inc. diseña, desarrolla, fabrica, alquila y vende vehículos eléctricos y sistemas de generación y almacenamiento de energía en Estados Unidos, China y a nivel internacional.
-Racional: Tesla es líder mundial en movilidad eléctrica y energías renovables, sectores en expansión, aportando innovación y crecimiento disruptivo a largo plazo al portafolio.
+Justificación: Tesla es líder mundial en movilidad eléctrica y energías renovables, sectores en expansión, aportando innovación y crecimiento disruptivo a largo plazo al portafolio.
 
 **WALMART INC.(WMT)**
 Sector: Distribución y venta minorista de alimentos
 Principales actividades: opera tiendas y clubes minoristas y mayoristas, sitios web de comercio electrónico y aplicaciones móviles en todo el mundo.
-Racional: Walmart es el minorista más grande del mundo, con una sólida red logística y crecimiento en comercio electrónico, ofreciendo estabilidad y defensa ante ciclos económicos adversos.
+Justificación: Walmart es el minorista más grande del mundo, con una sólida red logística y crecimiento en comercio electrónico, ofreciendo estabilidad y defensa ante ciclos económicos adversos.
 
 **Intel Corporation (INTC)**
 Sector: Tecnología
 Principales actividades: Intel Corporation diseña, desarrolla, fabrica, comercializa y vende productos y servicios informáticos y relacionados en todo el mundo. 
-Racional: Intel es una referencia en la fabricación de semiconductores y procesadores a nivel mundial. Su reestructuración reciente y apuesta por la manufactura avanzada ofrecen oportunidades de crecimiento estratégico.
+Justificación: Intel es una referencia en la fabricación de semiconductores y procesadores a nivel mundial. Su reestructuración reciente y apuesta por la manufactura avanzada ofrecen oportunidades de crecimiento estratégico.
 
 **JPMorgan Chase & Co. (JPM)**
 Sector: Servicios financieros
 Principales actividades: opera como una compañía de servicios financieros a nivel mundial. Opera a través de tres segmentos: Banca de Consumo y Banca Comunitaria, Banca Comercial y de Inversión, y Gestión de Activos y Patrimonio. La compañía ofrece productos de depósito, inversión y préstamo, gestión de efectivo, pagos y servicios. 
-Racional: JPMorgan, el banco más grande de EE.UU., combina solidez financiera, diversificación de ingresos y liderazgo en banca de inversión y gestión de activos, aportando estabilidad al portafolio.
+Justificación: JPMorgan, el banco más grande de EE.UU., combina solidez financiera, diversificación de ingresos y liderazgo en banca de inversión y gestión de activos, aportando estabilidad al portafolio.
 
 **Ford Motor Company (F)**
 Sector: Consumo discrecional
 Principales actividades: desarrolla, entrega y presta servicio a camionetas, vehículos utilitarios deportivos (SUV), furgonetas y automóviles comerciales Ford, y vehículos de lujo Lincoln en todo el mundo.  
-Racional: Ford representa la transición de la industria automotriz hacia vehículos eléctricos y tecnologías inteligentes, ofreciendo exposición a movilidad sostenible y recuperación cíclica.
+Justificación: Ford representa la transición de la industria automotriz hacia vehículos eléctricos y tecnologías inteligentes, ofreciendo exposición a movilidad sostenible y recuperación cíclica.
 
 **NIKE, Inc. (NKE)**
 Sector: Consumo discrecional
 Principales actividades: junto con sus subsidiarias, se dedica al diseño, desarrollo, comercialización y venta de calzado, ropa, equipos, accesorios y servicios deportivos en todo el mundo.  
-Racional: Nike es líder mundial en ropa y calzado deportivo, con fuerte reconocimiento de marca e innovación continua, lo que brinda exposición al consumo global y a tendencias de vida saludable.
+Justificación: Nike es líder mundial en ropa y calzado deportivo, con fuerte reconocimiento de marca e innovación continua, lo que brinda exposición al consumo global y a tendencias de vida saludable.
 
 **The Goldman Sachs Group, Inc. (GS)**
 Sector: Servicios financieros
 Principales actividades: ofrece una gama de servicios financieros a empresas, instituciones financieras, gobiernos y particulares en América, Europa, Oriente Medio, África y Asia. Opera a través de los segmentos de Banca y Mercados Globales, Gestión de Activos y Patrimonios, y Soluciones de Plataforma. 
-Racional: Goldman Sachs es uno de los bancos de inversión más importantes del mundo, con alto nivel de diversificación y generación de ingresos en servicios financieros, ideal para capturar oportunidades en mercados de capitales.
+Justificación: Goldman Sachs es uno de los bancos de inversión más importantes del mundo, con alto nivel de diversificación y generación de ingresos en servicios financieros, ideal para capturar oportunidades en mercados de capitales.
 
 **Netflix, Inc. (NFLX)**
 Sector: Servicios de Comunicación
 Principales actividades: ofrece servicios de entretenimiento. La compañía ofrece series de televisión, documentales, largometrajes y juegos en diversos géneros e idiomas. También ofrece a sus miembros la posibilidad de recibir contenido en streaming a través de una amplia gama de dispositivos conectados a internet, como televisores, reproductores de vídeo digitales, decodificadores y dispositivos móviles. 
-Racional: Netflix es pionero en el streaming de contenido digital, con expansión global y fuerte creación de contenido original, ofreciendo exposición a cambios en el consumo de entretenimiento.
+Justificación: Netflix es pionero en el streaming de contenido digital, con expansión global y fuerte creación de contenido original, ofreciendo exposición a cambios en el consumo de entretenimiento.
 
 **Chevron Corporation (CVX)**
 Sector: Energético
 Principales actividades: a través de sus filiales, participa en operaciones integradas de energía y productos químicos en Estados Unidos e internacionalmente.  
-Racional: Chevron proporciona diversificación energética con operaciones integradas en petróleo, gas y químicos, y además ofrece estabilidad de dividendos, ideal en entornos de inflación o volatilidad energética.
+Justificación: Chevron proporciona diversificación energética con operaciones integradas en petróleo, gas y químicos, y además ofrece estabilidad de dividendos, ideal en entornos de inflación o volatilidad energética.
 
 **Adobe Inc. (ADBE)**
 Sector: Tecnología 
 Principales actividades: junto con sus filiales, opera como una empresa tecnológica a nivel mundial. Opera a través de tres segmentos: Medios Digitales, Experiencia Digital y Publicidad y Publicidad. 
-Racional: Adobe es líder mundial en software creativo y marketing digital, posicionada en sectores en crecimiento como creación de contenido digital, analítica y experiencia de usuario.
+Justificación: Adobe es líder mundial en software creativo y marketing digital, posicionada en sectores en crecimiento como creación de contenido digital, analítica y experiencia de usuario.
 
 **Bank of America Corporation (BAC)**
 Sector: Servicios financieros
 Principales actividades: a través de sus subsidiarias, ofrece diversos productos y servicios financieros a particulares, pymes, inversores institucionales, grandes corporaciones y gobiernos de todo el mundo.  
-Racional: Bank of America es una de las principales instituciones financieras globales, con diversificación en banca minorista, inversión y servicios financieros, ofreciendo solidez ante cambios económicos.
+Justificación: Bank of America es una de las principales instituciones financieras globales, con diversificación en banca minorista, inversión y servicios financieros, ofreciendo solidez ante cambios económicos.
 
 **Citigroup Inc. (C)**
 Sector: Servicios financieros
 Principales actividades: ofrece diversos productos y servicios financieros a consumidores, empresas, gobiernos e instituciones. 
-Racional: Citigroup tiene una amplia presencia internacional, especialmente en mercados emergentes, lo que aporta diversificación geográfica y exposición a crecimiento fuera de EE.UU.
+Justificación: Citigroup tiene una amplia presencia internacional, especialmente en mercados emergentes, lo que aporta diversificación geográfica y exposición a crecimiento fuera de EE.UU.
 
-------------------------------------------------------------------------------------------- 
-# Parte II. Valor en Riesgo no paramétrico
+---
 
-Bueno, en esta parte vamos a poner las librerias que necesitaremos
+# Valor en Riesgo no paramétrico
+
+En esta sección se calcula el VaR individual y el VaR del portafolio utilizando distintos métodos no paramétricos: Simulación Histórica, Simulación Monte Carlo bajo supuestos normales y de Laplace, Bootstrapping y Suavizamiento Exponencial. Estos métodos permiten estimar el riesgo de pérdida sin asumir una distribución específica de los rendimientos. Se consideran diferentes niveles de confianza (95%, 97% y 99%) y horizontes de tiempo (1, 7, 15, 30, 60, 90 y 180 días), así como diferentes tamaños de simulación. Adicionalmente, se calcula la Pérdida Esperada (ES) para cada método y nivel de confianza, con el fin de complementar la medición del riesgo extremo.
 
 **Librerias**
 ```{r, message=FALSE, warning=FALSE}
-library(quantmod)
-library(goftest)
-library(corrplot)
-library(fitdistrplus)
-library(dplyr)
-library(VGAM)
+library(quantmod) # para descargar datos de Yahoo Finance
+library(goftest) # para pruebas de bondad de ajuste
+library(corrplot) # para graficar matrices de correlación
+library(fitdistrplus) # para ajustar distribuciones
+library(dplyr) # para manipulación de datos
+library(VGAM) # para ajustar distribuciones
+library(tidyr) 
+
 ```
 
 **Emisoras**
@@ -133,8 +147,10 @@ cartera <- c("AAPL","MSFT","NVDA","AMZN","META","GOOGL","AVGO","GOOG","TSLA","WM
 getSymbols(cartera,src = "yahoo",from="2022-01-01", to="2025-03-01")
 ```
 **Datos**
+
 ```{r}
 d1 <- data.frame(P1=AAPL$AAPL.Close,P2=MSFT$MSFT.Close,P3=NVDA$NVDA.Close,P4=AMZN$AMZN.Close,P5=META$META.Close,P6=GOOGL$GOOGL.Close,P7=AVGO$AVGO.Close,P8=GOOG$GOOG.Close,P9=TSLA$TSLA.Close,P10=WMT$WMT.Close,P11=INTC$INTC.Close,P12=JPM$JPM.Close,P13=F$F.Close,P14=NKE$NKE.Close,P15=GS$GS.Close,P16=NFLX$NFLX.Close,P17=CVX$CVX.Close,P18=ADBE$ADBE.Close,P19=BAC$BAC.Close,P20=C$C.Close)
+
 
 colnames(d1) <- c("P1","P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16","P17","P18","P19","P20")
 
@@ -143,12 +159,22 @@ m <- length(d1[1,])  #número de emisoras
 nc <- c(0.95,0.97,0.99) #niveles de confianza
 numsim <- c(5000,10000,20000) #número de simulaciones
 dias <- c(1, 7, 15, 30, 60, 90, 180)  #horizontes de tiempo
+
 ```
 
+
+
+
 **Rendimientos**
+Para el calculo de rendimientos diarios vamos a usar la siguiente formula para cada acción:
+
+$$ R_t = \frac{P_{t+1}}{P_t} - 1 $$
+
+
 ```{r}
 Rend <- matrix(NA,nrow = n-1, ncol = m)
 colnames(Rend) <- paste0("P", 1:m)
+
 
 for(k in 1:m){
   for (j in 1:(n-1)){
@@ -156,6 +182,8 @@ for(k in 1:m){
   }
 }  
 ```
+
+
 
 **Función de perdidas y ganancias**
 ```{r}
@@ -171,7 +199,9 @@ for(k in 1:m){
 
 ```
 
-## VaR individual por Simulación Histórica 
+# VaR por Simulación Histórica 
+
+**VaR individual**
 
 ```{r}
 VaRInd <- matrix(nrow = m, ncol = length(nc))
@@ -183,6 +213,13 @@ for(k in 1:m){
     VaRInd[k, j] <- quantile(PL[,k], nc[j], na.rm = TRUE)[1]
   }
 }
+
+
+```
+
+**VaR ajustado a diferentes horizontes de tiempo**
+
+```{r}
 
 VaRIndD <- list()  #lista de emisoras
 
@@ -197,14 +234,14 @@ for (k in 1:m) {
   rownames(MVaRD) <- paste0(dias, "días")
   VaRIndD[[ colnames(PL)[k] ]] <- MVaRD
 }
-
 ```
+
 
 ```{r}
-VaRIndD[["P1"]]
+knitr::kable(VaRIndD[["P1"]], caption = "VaR Individual - Emisora P1")
 ```
 
-**Expected Shortfall SH**
+**ES: Expected Shortfall **
 
 ```{r}
 VaR_ES <- function(PL, niveles_confianza = c(0.95, 0.97, 0.99)) {
@@ -227,17 +264,25 @@ VaR_ES <- function(PL, niveles_confianza = c(0.95, 0.97, 0.99)) {
   return(list(VaR = VaR, ES = ES))
 }
 
+ES.SH <- VaR_ES(PL) # Calcular VaR y ES
+
+
 ```
 
 ```{r}
-ES.SH <- VaR_ES(PL)
-print(ES.SH$VaR)
-print(ES.SH$ES)
+# Mostrar tabla de VaR
+knitr::kable(ES.SH$VaR, caption = "Valor en Riesgo (VaR)", digits = 4)
+
+```
+```{r}
+# Mostrar tabla de ES
+knitr::kable(ES.SH$ES, caption = "Pérdida Esperada (Expected Shortfall, ES)", digits = 4)
 ```
 
 
 ## VaR individual por Simulación Monte Carlo Normal 
-```{r}
+```{r, warning=FALSE}
+
 y <- function(x) {
   mod <- fitdist(x[!is.na(x)], "norm", method = "mle")
   return(mod$estimate)
@@ -249,9 +294,14 @@ sigmav <- p[2, ]
 
 ```
 
-```{r}
+
+
+```{r, warning=FALSE}
 y(Rend[,1])
 ```
+
+
+
 ```{r}
 set.seed(350)
 RendSM <- matrix(NA, nrow = n, ncol = m)
@@ -275,10 +325,26 @@ for (j in 1:m) {  #por emisora
 ```
 
 ```{r}
-for (j in 1:m) {
-  cat("\nResumen de pérdidas simuladas para:", colnames(PL)[j], "\n")
-  print(summary(PL[, j]))
-}
+# Creacion de tabla para visualizacion 
+# Calcular resumen estadístico
+resumen_mat <- apply(PLSM, 2, summary)  # columnas = emisoras
+resumen_df <- as.data.frame(t(resumen_mat))
+
+resumen_df$Emisora <- c("P1", "P2", "P3", "P4", "P5","P6", "P7", "P8", "P9", "P10","P11", "P12", "P13", "P14", "P15","P16", "P17", "P18", "P19","P20")
+
+resumen_df <- resumen_df[, c("Emisora", setdiff(names(resumen_df), "Emisora"))]
+
+
+```
+
+
+```{r}
+
+# Mostrar con kable
+knitr::kable(resumen_df,
+             caption = "Resumen estadístico de las pérdidas simuladas (PLSM)",
+             digits = 4)
+
 ```
 
 ```{r}
@@ -302,10 +368,11 @@ for (j in 1:m) {
 ```
 
 ```{r}
-VaRSMd[["P1"]]
+knitr::kable(VaRSMd[["P1"]], digits = 4)
+
 ```
 
-```{r}
+```{r, warning=FALSE}
 VaRconv <- list()  #resultados por emisora
 
 for (p in 1:m) {
@@ -346,6 +413,8 @@ for (p in 1:m) {
 
 ```
 
+
+
 ```{r}
 resVaR <- data.frame() #promedios finales
 
@@ -366,18 +435,37 @@ for (emisora in names(VaRconv)) {
   }
 }
 
-print(resVaR)
+```
+
+
+
+```{r}
+
+knitr::kable(resVaR, caption = "VaR promedio por emisora y número de simulaciones (Simulación Monte Carlo Normal)", digits = 4,align = "c")
 
 ```
+
 **Expected Shortfall SM-Normal**
 ```{r}
-ES.MC <- VaR_ES(PLSM)
-print(ES.MC)
+
+rownames(ES.MC$ES) <- colnames(PLSM)  # Asegurarse de que coincidan con los nombres de las emisoras
+
+# Convertir la matriz a un data.frame
+ES_df <- as.data.frame(ES.MC$ES)
+
+# Agregar columna "Emisora" explícitamente
+ES_df$Emisora <- rownames(ES_df)
+
+# Reordenar columnas para que "Emisora" esté primero
+ES_df <- ES_df[, c("Emisora", setdiff(names(ES_df), "Emisora"))]
+
+# Imprimir la tabla con knitr::kable
+knitr::kable(ES_df, caption = "Expected Shortfall (ES) por Simulación Monte Carlo Normal",digits = 4)
+
 ```
 
 ## VaR individual por Simulación Monte Carlo Laplace
-```{r}
-library(VGAM)
+```{r, warning=FALSE, message=FALSE}
 
 #Ajustamos distribución Laplace a los rendimientos
 
@@ -451,21 +539,30 @@ for (emisora in names(VaR_Laplace_conv)) {
   }
 }
 
-print(resVaR_Laplace)
 
+knitr::kable(resVaR_Laplace,caption = "Promedio de VaR por Emisora y Nivel de Confianza",digits = 4,align = "c")
 
 ```
 
 **Expected Shortfall SM-Laplace**
 ```{r}
 ES.MCL <- VaR_ES(VaRm)
-print(ES.MCL)
 ```
-Los modelos VAR son herramientas estadísticas utilizadas para medir el riesgo de mercado en carteras de activos financieros. Estos modelos permiten estimar la posible pérdida máxima que una cartera podría experimentar en un horizonte temporal determinado, dado un nivel de confianza específico. Existen diferentes enfoques para calcular el VAR, entre ellos el VAR paramétrico, el VAR no paramétrico y el VAR por simulación Monte Carlo. En este análisis, se explorarán estos enfoques utilizando datos históricos de precios de acciones de diversas empresas.
+
+```{r}
+knitr::kable(
+  ES.MCL,
+  caption = "Expected Shortfall (ES) por Simulación Monte Carlo Laplace",
+  digits = 4,
+  align = "c")
+```
+
 
 
 ##Simulación Bootstrapping
 
+
+**Simulación Bootstrapping multivariada del portafolio**
 ```{r}
 
 # Simulación bootstrap multivariada
@@ -491,9 +588,11 @@ PL_Total <- rowSums(PL, na.rm = TRUE)
 
 #Calcular VaR por Simulación Bootstrap 
 VaR_Bootstrap <- quantile(PL_Total, probs = c(0.90, 0.95, 0.99), na.rm = TRUE)
-print(VaR_Bootstrap)
-```
 
+print(VaR_Bootstrap)
+
+```
+**Simulación bootstrap para VaR individual**
 ```{r}
 #Individual
 # Suposiciones: ya tienes Rend calculado como una matriz de rendimientos (n-1 x m)
@@ -521,15 +620,31 @@ for (s in numsim) {
   
 VaR_individual <- apply(VaRLim, 2, quantile, probs = c(0.90, 0.95, 0.99), na.rm = TRUE)
 
-# Mostrar resultados individuales por emisora
-for (k in 1:m) {
-  cat("\nVaR para", colnames(d1)[k], ":\n")
-  print(VaR_individual[, k])
-}
-}
 
 ```
 
+```{r}
+# Mostrar resultados
+ # Convertimos a data frame largo para kable
+  df_VaR <- as.data.frame(VaR_individual)
+  df_VaR <- tibble::rownames_to_column(df_VaR, "Nivel_Confianza") %>%
+    pivot_longer(-Nivel_Confianza, names_to = "Emisora", values_to = "VaR") %>%
+    mutate(Simulaciones = s) %>%
+    select(Simulaciones, everything())
+
+  knitr::kable(
+    df_VaR,
+    caption = paste("VaR Individual por Emisora -", s, "Simulaciones"),
+    digits = 4,
+    align = "c"
+  )
+
+```
+
+
+
+
+**Simulación bootstrap para VaR del portafolio completo**
 ```{r}
 #Portafolio
 
@@ -569,37 +684,30 @@ for (s in names(VaRconvergencia)) {
 
 
 
+
 #VaR Paramétrico
 
-Rend <- matrix(NA,nrow = n-1, ncol = m)
-colnames(Rend) <- paste0("P", 1:m)
-
-for(k in 1:m){
-  for (j in 1:(n-1)){
-    Rend[j,k] <- d1[j+1,k]/d1[j,k]-1 #discreto
-  }
-}
-```{r}
-f<- qnorm(nc,0,1) #nivel de riesgo con una N(0,1)
-t<- 1 #plazo expresado en días
-volatilidad<- c()
-
-for(k in 1:m){ #en este caso j representa al número de los emisoras
-  volatilidad[k]<- sd(Rend[,k])
-}
-print(f)
-```
-
-```{r}
-VaRp<- c()
-
-for(k in 1:m){
-  VaRp[k]<- d1[n,k]*f*volatilidad[k]*sqrt(t)
-}
-```
+Finalmente, se calcula el VaR individual y el VaR del portafolio utilizando métodos paramétricos, los cuales suponen una distribución específica de los rendimientos. Se incluyen las siguientes metodologías: VaR Paramétrico estándar, Delta-Normal, la expansión de Cornish-Fisher y el modelo EWMA (Exponentially Weighted Moving Average). Se mantiene la coherencia en niveles de confianza y horizontes de tiempo respecto a la sección anterior. Esta parte del análisis permite comparar los resultados obtenidos con los métodos no paramétricos y evaluar la sensibilidad del VaR ante diferentes supuestos distribucionales.
 
 
 
-aaaaaaaaaaa vamos a morirrr
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
