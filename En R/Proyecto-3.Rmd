@@ -762,6 +762,7 @@ for(j in 1:m){
   VaRp[j]<- d1[n,j]*f*volatilidad[j]*sqrt(t)
 }
 ```
+
 ```{r}
 #VaR paramétrico para un portafolio de inversión
 acciones<- rep(1000,m)
@@ -810,10 +811,88 @@ sum(VaR.ind)
 #Delta Normal
 
 ```{r}
+#Delta Normal por emisora
 
+# Precios de cierre
+precios <- do.call(cbind, lapply(cartera, function(sym) Cl(get(sym))))
+colnames(precios) <- cartera
+
+# Rendimientos diarios
+rend <- na.omit(ROC(precios, type = "discrete"))
+
+# Último precio por emisora
+ult_precios <- as.numeric(last(precios))
+
+# Parámetros
+z_scores <- qnorm(nc)
+acciones <- 1000  # supongamos 1000 acciones por emisora
+
+# Inicialización de lista de resultados por emisora
+VaR_DN_ind <- list()
+
+for (j in 1:ncol(rend)) {
+  r <- rend[, j]
+  mu <- mean(r)
+  sigma <- sd(r)
+  precio <- ult_precios[j]
+  
+  # VaR diario por nivel de confianza
+  VaR_dia <- -acciones * (mu + z_scores * sigma) * precio
+  
+  # Escalamiento temporal
+  VaR_esc <- matrix(NA, nrow = length(dias), ncol = length(nc))
+  colnames(VaR_esc) <- paste0("VaR_", nc * 100, "%")
+  rownames(VaR_esc) <- paste0(dias, " días")
+  
+  for (i in seq_along(dias)) {
+    VaR_esc[i, ] <- VaR_dia * sqrt(dias[i])
+  }
+  
+  VaR_DN_ind[[colnames(rend)[j]]] <- VaR_esc
+}
+
+# Mostrar un ejemplo (AAPL)
+VaR_DN_ind[["AAPL"]]
 ```
 
 
+```{r}
+#VaR Delta Normal para el portafolio completo
+# Supongamos posiciones iguales (1000 acciones por emisora)
+posiciones <- rep(1000, ncol(rend))
+
+# Media y covarianza
+mu_port <- colMeans(rend)
+sigma_port <- cov(rend)
+
+# Valor del portafolio actual
+valores_actuales <- ult_precios * posiciones
+valor_portafolio <- sum(valores_actuales)
+
+# VaR Delta Normal Portafolio
+VaR_Portafolio <- matrix(NA, nrow = length(dias), ncol = length(nc))
+colnames(VaR_Portafolio) <- paste0("VaR_", nc * 100, "%")
+rownames(VaR_Portafolio) <- paste0(dias, " días")
+
+for (j in seq_along(nc)) {
+  z <- z_scores[j]
+  
+  # Varianza del portafolio
+  var_port <- t(valores_actuales) %*% sigma_port %*% valores_actuales
+  sigma_p <- sqrt(var_port)
+  
+  # VaR diario portafolio
+  VaR_dia <- -z * sigma_p
+  
+  # Escalar por raíz del tiempo
+  for (i in seq_along(dias)) {
+    VaR_Portafolio[i, j] <- VaR_dia * sqrt(dias[i])
+  }
+}
+
+# Mostrar resultados
+round(VaR_Portafolio, 2)
+```
 
 
 
