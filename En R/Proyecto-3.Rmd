@@ -192,8 +192,11 @@ ES.SH <- VaR_ES(PL) # Calcular VaR y ES
 #### Creacion de tabla 
 
 ```{r, message=FALSE, warning=FALSE}
+<<<<<<< Updated upstream
 #Creacion de tabla 
 
+=======
+>>>>>>> Stashed changes
 # Combinar todas las tablas en una sola con columna de emisora y horizonte
 tabla_individual <- do.call(rbind, lapply(names(VaRIndD), function(nombre) {
   df <- as.data.frame(VaRIndD[[nombre]])
@@ -734,6 +737,11 @@ tabla_final <- tabla_final %>%
 # 5. Mostrar tabla final
 tabla_final
 ```
+
+
+
+
+
 
 
 
