@@ -1,0 +1,441 @@
+---
+title: "Valor en Riesgo y ES para portafolio del S&P 500"
+subtitle: "Proyecto de Análisis de Riesgo Financiero"
+author: |
+  Fernanda Hernández,
+  Leonardo Rosas,
+  José Cortes,
+  Lizeth Pastrana 
+date: "Profesor: Jorge Luis Reyes García"
+output:
+  pdf_document:
+    toc: true
+  html_document:
+    toc: true
+    number_sections: true
+---
+
+
+## Abstract
+An investment portfolio was constructed consisting of 20 stocks from companies belonging to the S&P 500 index, selected according to criteria of sector diversification and economic relevance, for the period from January 2022 to March 2025. Historical price data were obtained from the financial platform Yahoo Finance. For each selected issuer, a description of its economic sector, its main operating activities, and a justification for its inclusion in the portfolio are provided, considering its market representativeness and relevance within the risk analysis.
+
+
+# Selección de Activos
+
+## Descripición de Activos
+Se construyó un portafolio de inversión compuesto por 20 acciones de compañías pertenecientes al índice S&P 500, seleccionadas de acuerdo con criterios de diversificación sectorial y relevancia económica, para el período comprendido entre enero de 2022 y marzo de 2025. Los datos históricos de precios fueron obtenidos de la plataforma financiera Yahoo Finance. Para cada emisora seleccionada, se proporciona una descripción del sector económico al que pertenece, sus principales actividades operativas, y una justificación del por qué se decidió incluirla en el portafolio, considerando su representatividad en el mercado y su relevancia dentro del análisis de riesgo.
+
+
+
+**Apple Inc. (AAPL)**
+Sector: Tecnología 
+Principales actividades: diseña, fabrica y comercializa smartphones, ordenadores personales, tabletas, wearables y accesorios en todo el mundo. 
+Racional: Apple es una de las compañías más valiosas y reconocidas globalmente, líder en innovación tecnológica. Su inclusión aporta solidez y exposición a tendencias de consumo premium, innovación y transformación digital.
+Justificación: Apple es una de las compañías más valiosas y reconocidas globalmente, líder en innovación tecnológica. Su inclusión aporta solidez y exposición a tendencias de consumo premium, innovación y transformación digital.
+
+**Microsoft Corp. (MSFT)**
+Sector: Tecnología 
+Principales actividades: desarrolla y da soporte a software, servicios, dispositivos y soluciones en todo el mundo.
+Racional: Microsoft ofrece estabilidad y crecimiento en sectores clave como software empresarial, computación en la nube e inteligencia artificial, siendo una de las empresas tecnológicas más diversificadas y rentables del mundo.
+Justificación: Microsoft ofrece estabilidad y crecimiento en sectores clave como software empresarial, computación en la nube e inteligencia artificial, siendo una de las empresas tecnológicas más diversificadas y rentables del mundo.
+
+**NVIDIA Corp. (NVDA)**
+Sector: Tecnología 
+Principales actividades: NVIDIA Corporation, empresa de infraestructura informática, ofrece soluciones gráficas, de computación y de redes en Estados Unidos, Singapur, Taiwán, China, Hong Kong y a nivel internacional. El segmento de Computación y Redes comprende plataformas informáticas para centros de datos y plataformas de redes de extremo a extremo.
+Racional: NVIDIA lidera sectores estratégicos como inteligencia artificial, centros de datos y gráficos, posicionándola como un actor fundamental en el futuro de la computación, lo que diversifica riesgos tecnológicos y de crecimiento.
+Justificación: NVIDIA lidera sectores estratégicos como inteligencia artificial, centros de datos y gráficos, posicionándola como un actor fundamental en el futuro de la computación, lo que diversifica riesgos tecnológicos y de crecimiento.
+
+**Amazon.com, Inc. (AMZN)**
+Sector: Consumo discrecional
+Principales actividades: se dedica a la venta minorista de productos de consumo, publicidad y servicios de suscripción a través de tiendas físicas y en línea en Norteamérica e internacionalmente. 
+Racional: Amazon domina el comercio electrónico y los servicios en la nube (AWS), sectores en constante expansión, lo que aporta exposición a innovación digital y consumo global al portafolio.
+Justificación: Amazon domina el comercio electrónico y los servicios en la nube (AWS), sectores en constante expansión, lo que aporta exposición a innovación digital y consumo global al portafolio.
+
+**Meta Platforms, Inc. (META)**
+Sector: Servicios de comunicación
+Principales actividades: se dedica al desarrollo de productos que permiten a las personas conectarse y compartir con amigos y familiares a través de dispositivos móviles, computadoras personales, gafas de realidad virtual y mixta, realidad aumentada y wearables en todo el mundo. 
+Racional: Meta es un referente en redes sociales y está invirtiendo fuertemente en tecnologías emergentes como realidad aumentada y metaverso, ofreciendo una mezcla de innovación y liderazgo en comunicación digital.
+Justificación: Meta es un referente en redes sociales y está invirtiendo fuertemente en tecnologías emergentes como realidad aumentada y metaverso, ofreciendo una mezcla de innovación y liderazgo en comunicación digital.
+
+**Alphabet Inc. A (GOOGL)**
+Sector: Servicios de comunicación
+Principales actividades: Ofrece diversos productos y plataformas en Estados Unidos, Europa, Oriente Medio, África, Asia-Pacífico, Canadá y Latinoamérica. Opera a través de los segmentos de Servicios de Google, Google Cloud y Otras Apuestas. 
+Racional: Alphabet, a través de Google y sus filiales, controla gran parte del mercado de búsquedas y publicidad digital, además de innovar en sectores como la nube, inteligencia artificial y automóviles autónomos, lo que garantiza diversificación tecnológica.
+Justificación: Alphabet, a través de Google y sus filiales, controla gran parte del mercado de búsquedas y publicidad digital, además de innovar en sectores como la nube, inteligencia artificial y automóviles autónomos, lo que garantiza diversificación tecnológica.
+
+**Broadcom Inc. (AVGO)**
+Sector: Tecnología 
+Principales actividades: diseña, desarrolla y suministra diversos dispositivos semiconductores, centrándose en dispositivos complejos basados en semiconductores de óxido metálico complementario (MEC) de señal digital y mixta, así como en productos analógicos III-V a nivel mundial. 
+Racional: Broadcom es clave en la industria de semiconductores y comunicaciones, abasteciendo sectores esenciales como 5G, infraestructura de redes y servidores, brindando exposición a tecnología avanzada y crecimiento estructural.
+Justificación: Broadcom es clave en la industria de semiconductores y comunicaciones, abasteciendo sectores esenciales como 5G, infraestructura de redes y servidores, brindando exposición a tecnología avanzada y crecimiento estructural.
+
+**Alphabet Inc. C (GOOG)**
+Sector: Servicios de comunicación
+Principales actividades: ofrece diversos productos y plataformas en Estados Unidos, Europa, Oriente Medio, África, Asia-Pacífico, Canadá y Latinoamérica. Opera a través de los segmentos de Servicios de Google, Google Cloud y Otras Apuestas.
+Racional: La acción clase C de Alphabet proporciona la misma exposición a innovación, publicidad y tecnología global que GOOGL, pero sin derechos de voto, lo que permite diversificar dentro de una misma estructura corporativa.
+Justificación: La acción clase C de Alphabet proporciona la misma exposición a innovación, publicidad y tecnología global que GOOGL, pero sin derechos de voto, lo que permite diversificar dentro de una misma estructura corporativa.
+
+**Tesla, Inc. (TSLA)**
+Sector: Consumo discrecional
+Principales actividades: Tesla, Inc. diseña, desarrolla, fabrica, alquila y vende vehículos eléctricos y sistemas de generación y almacenamiento de energía en Estados Unidos, China y a nivel internacional.
+Racional: Tesla es líder mundial en movilidad eléctrica y energías renovables, sectores en expansión, aportando innovación y crecimiento disruptivo a largo plazo al portafolio.
+Justificación: Tesla es líder mundial en movilidad eléctrica y energías renovables, sectores en expansión, aportando innovación y crecimiento disruptivo a largo plazo al portafolio.
+
+**WALMART INC.(WMT)**
+Sector: Distribución y venta minorista de alimentos
+Principales actividades: opera tiendas y clubes minoristas y mayoristas, sitios web de comercio electrónico y aplicaciones móviles en todo el mundo.
+Racional: Walmart es el minorista más grande del mundo, con una sólida red logística y crecimiento en comercio electrónico, ofreciendo estabilidad y defensa ante ciclos económicos adversos.
+Justificación: Walmart es el minorista más grande del mundo, con una sólida red logística y crecimiento en comercio electrónico, ofreciendo estabilidad y defensa ante ciclos económicos adversos.
+
+**Intel Corporation (INTC)**
+Sector: Tecnología
+Principales actividades: Intel Corporation diseña, desarrolla, fabrica, comercializa y vende productos y servicios informáticos y relacionados en todo el mundo. 
+Racional: Intel es una referencia en la fabricación de semiconductores y procesadores a nivel mundial. Su reestructuración reciente y apuesta por la manufactura avanzada ofrecen oportunidades de crecimiento estratégico.
+Justificación: Intel es una referencia en la fabricación de semiconductores y procesadores a nivel mundial. Su reestructuración reciente y apuesta por la manufactura avanzada ofrecen oportunidades de crecimiento estratégico.
+
+**JPMorgan Chase & Co. (JPM)**
+Sector: Servicios financieros
+Principales actividades: opera como una compañía de servicios financieros a nivel mundial. Opera a través de tres segmentos: Banca de Consumo y Banca Comunitaria, Banca Comercial y de Inversión, y Gestión de Activos y Patrimonio. La compañía ofrece productos de depósito, inversión y préstamo, gestión de efectivo, pagos y servicios. 
+Racional: JPMorgan, el banco más grande de EE.UU., combina solidez financiera, diversificación de ingresos y liderazgo en banca de inversión y gestión de activos, aportando estabilidad al portafolio.
+Justificación: JPMorgan, el banco más grande de EE.UU., combina solidez financiera, diversificación de ingresos y liderazgo en banca de inversión y gestión de activos, aportando estabilidad al portafolio.
+
+**Ford Motor Company (F)**
+Sector: Consumo discrecional
+Principales actividades: desarrolla, entrega y presta servicio a camionetas, vehículos utilitarios deportivos (SUV), furgonetas y automóviles comerciales Ford, y vehículos de lujo Lincoln en todo el mundo.  
+Racional: Ford representa la transición de la industria automotriz hacia vehículos eléctricos y tecnologías inteligentes, ofreciendo exposición a movilidad sostenible y recuperación cíclica.
+Justificación: Ford representa la transición de la industria automotriz hacia vehículos eléctricos y tecnologías inteligentes, ofreciendo exposición a movilidad sostenible y recuperación cíclica.
+
+**NIKE, Inc. (NKE)**
+Sector: Consumo discrecional
+Principales actividades: junto con sus subsidiarias, se dedica al diseño, desarrollo, comercialización y venta de calzado, ropa, equipos, accesorios y servicios deportivos en todo el mundo.  
+Racional: Nike es líder mundial en ropa y calzado deportivo, con fuerte reconocimiento de marca e innovación continua, lo que brinda exposición al consumo global y a tendencias de vida saludable.
+Justificación: Nike es líder mundial en ropa y calzado deportivo, con fuerte reconocimiento de marca e innovación continua, lo que brinda exposición al consumo global y a tendencias de vida saludable.
+
+**The Goldman Sachs Group, Inc. (GS)**
+Sector: Servicios financieros
+Principales actividades: ofrece una gama de servicios financieros a empresas, instituciones financieras, gobiernos y particulares en América, Europa, Oriente Medio, África y Asia. Opera a través de los segmentos de Banca y Mercados Globales, Gestión de Activos y Patrimonios, y Soluciones de Plataforma. 
+Racional: Goldman Sachs es uno de los bancos de inversión más importantes del mundo, con alto nivel de diversificación y generación de ingresos en servicios financieros, ideal para capturar oportunidades en mercados de capitales.
+Justificación: Goldman Sachs es uno de los bancos de inversión más importantes del mundo, con alto nivel de diversificación y generación de ingresos en servicios financieros, ideal para capturar oportunidades en mercados de capitales.
+
+**Netflix, Inc. (NFLX)**
+Sector: Servicios de Comunicación
+Principales actividades: ofrece servicios de entretenimiento. La compañía ofrece series de televisión, documentales, largometrajes y juegos en diversos géneros e idiomas. También ofrece a sus miembros la posibilidad de recibir contenido en streaming a través de una amplia gama de dispositivos conectados a internet, como televisores, reproductores de vídeo digitales, decodificadores y dispositivos móviles. 
+Racional: Netflix es pionero en el streaming de contenido digital, con expansión global y fuerte creación de contenido original, ofreciendo exposición a cambios en el consumo de entretenimiento.
+Justificación: Netflix es pionero en el streaming de contenido digital, con expansión global y fuerte creación de contenido original, ofreciendo exposición a cambios en el consumo de entretenimiento.
+
+**Chevron Corporation (CVX)**
+Sector: Energético
+Principales actividades: a través de sus filiales, participa en operaciones integradas de energía y productos químicos en Estados Unidos e internacionalmente.  
+Racional: Chevron proporciona diversificación energética con operaciones integradas en petróleo, gas y químicos, y además ofrece estabilidad de dividendos, ideal en entornos de inflación o volatilidad energética.
+Justificación: Chevron proporciona diversificación energética con operaciones integradas en petróleo, gas y químicos, y además ofrece estabilidad de dividendos, ideal en entornos de inflación o volatilidad energética.
+
+**Adobe Inc. (ADBE)**
+Sector: Tecnología 
+Principales actividades: junto con sus filiales, opera como una empresa tecnológica a nivel mundial. Opera a través de tres segmentos: Medios Digitales, Experiencia Digital y Publicidad y Publicidad. 
+Racional: Adobe es líder mundial en software creativo y marketing digital, posicionada en sectores en crecimiento como creación de contenido digital, analítica y experiencia de usuario.
+Justificación: Adobe es líder mundial en software creativo y marketing digital, posicionada en sectores en crecimiento como creación de contenido digital, analítica y experiencia de usuario.
+
+**Bank of America Corporation (BAC)**
+Sector: Servicios financieros
+Principales actividades: a través de sus subsidiarias, ofrece diversos productos y servicios financieros a particulares, pymes, inversores institucionales, grandes corporaciones y gobiernos de todo el mundo.  
+Racional: Bank of America es una de las principales instituciones financieras globales, con diversificación en banca minorista, inversión y servicios financieros, ofreciendo solidez ante cambios económicos.
+Justificación: Bank of America es una de las principales instituciones financieras globales, con diversificación en banca minorista, inversión y servicios financieros, ofreciendo solidez ante cambios económicos.
+
+**Citigroup Inc. (C)**
+Sector: Servicios financieros
+Principales actividades: ofrece diversos productos y servicios financieros a consumidores, empresas, gobiernos e instituciones. 
+Racional: Citigroup tiene una amplia presencia internacional, especialmente en mercados emergentes, lo que aporta diversificación geográfica y exposición a crecimiento fuera de EE.UU.
+Justificación: Citigroup tiene una amplia presencia internacional, especialmente en mercados emergentes, lo que aporta diversificación geográfica y exposición a crecimiento fuera de EE.UU.
+
+
+
+```{r,include = FALSE,results='hide'}
+library(quantmod) # para descargar datos de Yahoo Finance
+library(tidyverse)# para manipulación de datos
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+
+
+cartera <- c("AAPL","MSFT","NVDA","AMZN","META","GOOGL","AVGO","GOOG","TSLA","WMT","INTC","JPM","F","NKE","GS","NFLX","CVX","ADBE","BAC","C") 
+
+getSymbols(cartera,src = "yahoo",from="2022-01-01", to="2025-03-01")
+
+d1 <- data.frame(P1=AAPL$AAPL.Close,P2=MSFT$MSFT.Close,P3=NVDA$NVDA.Close,P4=AMZN$AMZN.Close,P5=META$META.Close,P6=GOOGL$GOOGL.Close,P7=AVGO$AVGO.Close,P8=GOOG$GOOG.Close,P9=TSLA$TSLA.Close,P10=WMT$WMT.Close,P11=INTC$INTC.Close,P12=JPM$JPM.Close,P13=F$F.Close,P14=NKE$NKE.Close,P15=GS$GS.Close,P16=NFLX$NFLX.Close,P17=CVX$CVX.Close,P18=ADBE$ADBE.Close,P19=BAC$BAC.Close,P20=C$C.Close)
+
+# Asignar los nombres de las columnas sin el sufijo ".Close"
+colnames(d1) <- cartera
+```
+
+
+## visualización de datos
+
+Con el objetivo de visualizar el comportamiento histórico de las emisoras seleccionadas, se elaboró un gráfico de líneas que muestra las series de tiempo de los precios de cierre de cada acción considerada en el análisis. Esta visualización permite identificar tendencias generales, episodios de volatilidad y comportamientos particulares que podrían influir en el cálculo del riesgo.
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+d1$Fecha <- index(AAPL)  
+
+# Convertir d1 a formato data.frame si no lo es (en caso de provenir de un objeto xts):
+d1_df <- data.frame(Fecha = d1$Fecha, coredata(d1)[ , !(names(d1) %in% "Fecha")])
+
+# Convertir a formato largo: una fila por cada fecha y ticker
+d1_larga <- pivot_longer(d1_df, 
+                         cols = -Fecha, 
+                         names_to = "Ticker", 
+                         values_to = "Close")
+
+# Graficar la serie de tiempo de precios de cierre
+ggplot(d1_larga, aes(x = Fecha, y = Close, color = Ticker)) +
+  geom_line(size = 0.8) +
+  labs(title = "Serie de Tiempo de Precios de Cierre",
+       x = "Fecha", 
+       y = "Precio de Cierre (USD)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Dado que el enfoque del análisis está centrado en la medición del riesgo, trabajar directamente con los precios de las acciones no es recomendable, ya que estos no suelen ser series estacionarias. La no estacionariedad implica que los precios presentan una tendencia (creciente o aleatoria), y no poseen una media ni varianza constantes en el tiempo. Esto representa un problema al aplicar modelos de Valor en Riesgo (VaR), los cuales requieren supuestos de estacionariedad para obtener resultados confiables.
+
+Por esta razón, en nuestro análisis utilizamos los *rendimientos simples*, definidos como:
+
+$$
+R_t = \frac{P_{t+1} - P_t}{P_t}
+$$
+$R_t$: Rendimiento del activo en el período t
+
+$P_t$: Precio del activo en el tiempo t
+
+$P_{t+1}$: Precio del activo en el tiempo t+1 (siguiente periodo)
+
+Y los graficamos para observar la diferencia con nuestras series de tiempo, nuevamente graficamos todas nuestras acciones, y aunque no se alcanza a observar claro que línea es de cada empresa, podemos ver que la serie ya es estacionaria.
+
+
+
+A continuación, se presenta el gráfico de los rendimientos simples para cada una de las acciones en el portafolio. Si bien debido a la densidad de la información no es posible identificar fácilmente cada serie individual, se puede observar visualmente que las series son estacionarias, con fluctuaciones alrededor de una media constante y sin tendencia aparente.
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+# Asegurar que tienes los precios
+d1_precios <- d1[ , 1:20]  # si las 20 columnas son precios
+
+# Obtener dimensiones
+n <- nrow(d1_precios)
+m <- ncol(d1_precios)
+
+# Calcular rendimientos logarítmicos o simples (usamos simples como tenías)
+Rend <- matrix(NA, nrow = n - 1, ncol = m)
+
+for(k in 1:m){
+  for(j in 1:(n-1)){
+    Rend[j, k] <- d1_precios[j+1, k] / d1_precios[j, k] - 1
+  }
+}
+# Convertir a data frame
+Rend_df <- as.data.frame(Rend)
+
+# Agregar fechas (omitir primera porque el primer rendimiento es NA)
+Rend_df$Fecha <- index(d1)[-1]
+
+# Asignar nombres correctos (tickers)
+colnames(Rend_df)[1:m] <- colnames(d1_precios)
+
+# Convertir a formato largo
+Rend_larga <- pivot_longer(Rend_df, 
+                           cols = -Fecha, 
+                           names_to = "Ticker", 
+                           values_to = "Rendimiento")
+
+# Graficar
+ggplot(Rend_larga, aes(x = Fecha, y = Rendimiento, color = Ticker)) +
+  geom_line(size = 0.8) +
+  labs(title = "Serie de Tiempo de Rendimientos Diarios",
+       x = "Fecha", 
+       y = "Rendimiento Diario") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+
+
+```
+
+
+# Valor en Riesgo no paramétrico
+
+
+En esta sección se calcula el Valor en Riesgo (VaR) individual y para el portafolio, utilizando varios métodos no paramétricos. Estos métodos permiten estimar el riesgo de pérdida sin hacer suposiciones sobre la distribución específica de los rendimientos, lo cual es útil para la estimación del riesgo en situaciones donde los datos no siguen distribuciones conocidas o estándar.
+
+
+
+##  Simulación Histórica
+
+
+En esta sección se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método de Simulación Histórica, que estima el riesgo de pérdida futura basándose en los rendimientos históricos observados. Este enfoque no hace suposiciones sobre la distribución de los rendimientos y, por lo tanto, refleja directamente el comportamiento pasado del activo.
+
+El*VaR se calcula como el percentil inferior de los rendimientos históricos, lo que representa la pérdida máxima esperada en un nivel de confianza dado. El VaR para un nivel de confianza $\alpha$ es el valor tal que el área bajo la distribución de los rendimientos hasta este punto es igual a $\alpha$.
+
+El cálculo se realiza para cada emisora y para diferentes horizontes de tiempo: 1, 7, 15, 30, 60, 90 y 180 días. Además, se consideran tres niveles de confianza: 95%, 97% y 99%, lo que permite evaluar el riesgo bajo diversas condiciones.
+
+El VaR para cada emisora $i$ y horizonte de tiempo $t$ se define como:
+
+$$
+VaR_{\alpha} = \text{percentil}_{\alpha}(\text{rendimientos históricos})
+$$
+
+Por otro lado, la Pérdida Esperada (ES) se calcula como el valor promedio de las pérdidas que exceden el VaR. Esto proporciona una medida más completa del riesgo en situaciones extremas. La ES para un nivel de confianza $\alpha$ se calcula como el promedio de los rendimientos inferiores al VaR:
+
+$$
+ES_{\alpha} = \frac{1}{n} \sum_{i=1}^{n} \text{Pérdida}_i \quad \text{si} \quad \text{Pérdida}_i \leq VaR_{\alpha}
+$$
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamnete con cada nivel de confianza (95%, 97%, 99%).
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+# Cargar las librerías necesarias
+library(knitr)
+library(readxl)
+library(dplyr)
+
+# Cargar la tabla desde el archivo Excel
+tabla_Hist <- read_excel("Resultados VaR/tabla_Hist.xlsx")
+
+# Mostrar los primeros registros de forma bonita con kable
+kable(sample_n(tabla_Hist, 15), caption = "VaR Historico")
+
+```
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+# Filtrar por emisora
+df_p1 <- tabla_Hist %>% filter(Emisora == "P1")
+
+# Asegurar orden lógico del horizonte
+orden_horizonte <- c("1días", "7días", "15días", "30días", "60días", "90días", "180días")
+df_p1$Horizonte <- factor(df_p1$Horizonte, levels = orden_horizonte, ordered = TRUE)
+
+# Reestructurar los datos para graficar
+df_p1_long <- df_p1 %>%
+  pivot_longer(cols = starts_with("VaR_"), names_to = "Confianza", values_to = "VaR")
+
+# Graficar con leyenda en la parte inferior
+ggplot(df_p1_long, aes(x = Horizonte, y = VaR, color = Confianza, group = Confianza)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(title = "VaR por Simulación Histórica - Emisora P1",
+       x = "Horizonte de tiempo",
+       y = "Valor en Riesgo (VaR)",
+       color = "Nivel de Confianza") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",                     # Mueve la leyenda abajo
+    legend.title = element_text(face = "bold")      # Opcional: negrita al título de leyenda
+  )
+
+```
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+# Filtrar por emisora
+df_p1 <- tabla_Hist %>% filter(Emisora == "P1")
+
+# Orden lógico del horizonte
+orden_horizonte <- c("1días", "7días", "15días", "30días", "60días", "90días", "180días")
+df_p1$Horizonte <- factor(df_p1$Horizonte, levels = orden_horizonte, ordered = TRUE)
+
+# Reestructurar los datos de ES
+df_p1_es_long <- df_p1 %>%
+  pivot_longer(cols = starts_with("ES_"), names_to = "Confianza", values_to = "ES")
+
+# Graficar ES con colores diferentes
+ggplot(df_p1_es_long, aes(x = Horizonte, y = ES, color = Confianza, group = Confianza)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("ES_95" = "#E69F00", "ES_97" = "#56B4E9", "ES_99" = "#009E73")) +
+  labs(title = "Expected Shortfall por Simulación Histórica - Emisora P1",
+       x = "Horizonte de tiempo",
+       y = "Expected Shortfall (ES)",
+       color = "Nivel de Confianza") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold")
+  )
+
+```
+
+Los resultados obtenidos muestran cómo el **VaR** y la **ES** varían según el horizonte de tiempo y el nivel de confianza. En general, a medida que aumenta el nivel de confianza, tanto el VaR como la ES aumentan, reflejando un mayor riesgo de pérdida en situaciones extremas. Esto es consistente con la naturaleza de estos indicadores, que buscan capturar los eventos de cola de la distribución.
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+library(dplyr)
+library(knitr)
+
+# Asegúrate de que la columna correcta exista (ajusta si es otra)
+columna_var <- "VaR_99%"
+
+# Filtrar las 10 filas con mayor VaR sin repetir emisora
+top10_var_unico <- tabla_Hist %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+# Mostrar en tabla con kable
+kable(top10_var_unico, caption = "Top 10 VaR al 99% ")
+
+
+```
+
+
+Por ejemplo, para emisoras como **Tesla (TSLA)**, que suelen ser más volátiles, los valores de VaR y ES son considerablemente más altos que para emisoras más estables como **Johnson & Johnson (JNJ)**. Este comportamiento sugiere que, en términos de riesgo, las emisoras más volátiles requieren un monitoreo más cercano y, posiblemente, estrategias de cobertura.
+
+Además, el cálculo de la **Pérdida Esperada (ES)** complementa el análisis de VaR, ya que no solo mide la pérdida máxima esperada, sino también la magnitud promedio de las pérdidas en el extremo de la distribución. En muchas ocasiones, la **ES** es significativamente mayor que el **VaR**, especialmente para los niveles de confianza más altos, lo que indica que las pérdidas extremas pueden ser considerablemente más graves que las pérdidas típicas.
+
+
+
+
+### Portafolio Total
+
+El análisis del **VaR** y **ES** del **portafolio total (PT)** muestra cómo el riesgo agregado de las emisoras individuales se comporta en conjunto. En general, la diversificación del portafolio puede reducir el VaR total, ya que los rendimientos de las diferentes emisoras no están completamente correlacionados. Sin embargo, si el portafolio está compuesto por emisoras altamente correlacionadas, el riesgo total podría ser mayor, reflejando un mayor VaR y ES.
+
+La comparación entre los valores de VaR y ES del portafolio y las emisoras individuales permite evaluar el impacto de la **diversificación** en la mitigación del riesgo. En general, un portafolio diversificado tiende a presentar valores de VaR y ES más bajos que la simple suma de los VaRs de las emisoras individuales.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
