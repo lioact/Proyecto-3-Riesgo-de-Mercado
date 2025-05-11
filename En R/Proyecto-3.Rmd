@@ -14,7 +14,7 @@ output:
 # Selección de Activos
 
 
-# Valor en Riesgo no paramétrico
+# Valor en Riesgo NO paramétrico
 
 ```{r, message=FALSE, warning=FALSE}
 library(quantmod) # para descargar datos de Yahoo Finance
@@ -26,10 +26,9 @@ library(VGAM) # para ajustar distribuciones
 library(tidyr) # para manipulación de datos
 library(ggplot2) # para graficar
 library(lubridate) # para manipulación de fechas
-library(dplyr)
-library(tidyr)
-library(knitr)
-library(stringr)
+library(tidyr) # para manipulación de datos
+library(knitr) # para crear tablas
+library(stringr) # para manipulación de textos
 
 ```
 
@@ -205,7 +204,7 @@ for (k in 1:m) {
 
 
 ```
-#### Creacion de tabla 
+#### tabla 
 
 ```{r, message=FALSE, warning=FALSE}
 
@@ -249,7 +248,7 @@ tabla_individual
 
 
 
-## VaR individual y de portafolio por Simulación Monte Carlo Normal 
+## VaR Simulación Monte Carlo Normal 
 ```{r, warning=FALSE}
 # Extraer fechas y datos numéricos
 fechas <- d1[[which(sapply(d1, inherits, "Date"))]]
@@ -327,7 +326,12 @@ for (s in numsim_vec) {
   }
 }
 
-# Reformatear a tabla final
+
+```
+
+### Tabla
+```{r, warning=FALSE, message=FALSE}
+# Crear tabla
 tabla_final <- resultados %>%
   pivot_wider(
     names_from = Confianza,
@@ -370,18 +374,19 @@ set.seed(123)
 for (s in numsim_vec) {
   for (j in seq_along(emisoras)) {
     mu <- mu_lap[j]
-    b <- max(b_lap[j], 1e-6)  # asegura que b > 0
+    b <- max(b_lap[j], 1e-6)
     precio_actual <- precio_actuales[j]
     
     for (h in dias) {
       sim_rend <- matrix(rlaplace(s * h, location = mu, scale = b), ncol = h)
       sim_acum <- rowSums(sim_rend)
       sim_precios <- precio_actual * (1 + sim_acum)
-      sim_perdidas <- precio_actual - sim_precios
-      
+      sim_perdidas <- precio_actual - sim_precios  # 👈 pérdida = precio actual - futuro
+
       for (conf in nc) {
-        var <- quantile(sim_perdidas, probs = conf, na.rm = TRUE)
-        es <- mean(sim_perdidas[sim_perdidas > var], na.rm = TRUE)
+        alpha <- 1 - conf
+        var <- quantile(sim_perdidas, probs = alpha, na.rm = TRUE)
+        es <- mean(sim_perdidas[sim_perdidas >= var], na.rm = TRUE)  # 👈 pérdidas peores que VaR
         
         resultados <- rbind(resultados, data.frame(
           NumSim = s,
@@ -406,11 +411,12 @@ for (s in numsim_vec) {
     sim_rend <- matrix(rlaplace(s * h, location = mu_pt_lap, scale = b_pt_lap), ncol = h)
     sim_acum <- rowSums(sim_rend)
     sim_precios <- precio_pt * (1 + sim_acum)
-    sim_perdidas <- precio_pt - sim_precios
+    sim_perdidas <- precio_pt - sim_precios  # 👈 pérdida del portafolio
     
     for (conf in nc) {
-      var <- quantile(sim_perdidas, probs = conf, na.rm = TRUE)
-      es <- mean(sim_perdidas[sim_perdidas > var], na.rm = TRUE)
+      alpha <- 1 - conf
+      var <- quantile(sim_perdidas, probs = alpha, na.rm = TRUE)
+      es <- mean(sim_perdidas[sim_perdidas >= var], na.rm = TRUE)
       
       resultados <- rbind(resultados, data.frame(
         NumSim = s,
@@ -424,7 +430,15 @@ for (s in numsim_vec) {
   }
 }
 
-# === 4. Reformatear resultados en tabla deseada ===
+
+```
+
+
+
+### Tabla 
+```{r, warning=FALSE, message=FALSE}
+
+# === 4. tabla de resultados ===
 tabla_final <- resultados %>%
   pivot_wider(
     names_from = Confianza,
@@ -437,12 +451,7 @@ tabla_final <- resultados %>%
 
 # Mostrar tabla
 tabla_final
-
 ```
-
-
-
-
 
 
 
@@ -598,13 +607,14 @@ for (s in numsim_vec) {
       
       vars <- sapply(nc, function(conf) quantile(sim_perdidas, probs = conf, na.rm = TRUE))
       ess <- sapply(vars, function(v) {
-     perdidas_extremas <- sim_perdidas_pt[sim_perdidas_pt > v]
+      perdidas_extremas <- sim_perdidas[sim_perdidas > v]
       if (length(perdidas_extremas) == 0) {
     return(NA_real_)
-   } else {
-    return(mean(perdidas_extremas, na.rm = TRUE))
+    } else {
+     return(mean(perdidas_extremas, na.rm = TRUE))
   }
 })
+
 
       
       resultados <- rbind(resultados, data.frame(
@@ -888,6 +898,8 @@ for (j in seq_len(ncol(PL))) {
 
 ```
 
+# Tabla 
+
 ```{r}
 # 1. Crear tabla resumen en formato largo
 tabla_resumen <- do.call(rbind, lapply(names(VaR_Exp), function(nombre) {
@@ -950,68 +962,66 @@ tabla_final
 
 # Valor en Riesgo paramétrico
 
-#VaR Paramétrico
 
 ```{r}
-#VaR paramétrico para cada emisora
-f<- qnorm(nc,0,1) #nivel de riesgo con una N(0,1)
-t<- 1 #plazo expresado en días
-volatilidad<- c()
+# --- Cálculo de volatilidades ---
+volatilidad <- apply(Rend, 2, sd)  # Desviación estándar por emisora
 
-for(j in 1:m){ #en este caso j representa al número de los emisoras
-  volatilidad[j]<- sd(Rend[,j])
-}
+# --- Funciones de VaR y ES paramétrico ---
+fVaR <- function(nc, sigma, t) qnorm(nc) * sigma * sqrt(t)
+fES <- function(nc, sigma, t) dnorm(qnorm(nc)) / (1 - nc) * sigma * sqrt(t)
 
-VaRp<- c()
+# --- Inicializar tabla de resultados ---
+resultados <- dplyr::bind_rows()
 
-for(j in 1:m){
-  VaRp[j]<- d1[n,j]*f*volatilidad[j]*sqrt(t)
-}
-```
-```{r}
-#VaR paramétrico para un portafolio de inversión
-acciones<- rep(1000,m)
-d2<- matrix(data=NA, nrow=n, ncol=m)
-
-for(j in 1:m){
-  for (k in 1:n){
-    d2[k,j]<- d1[k,j]*acciones[j]
+# --- Loop por emisora, horizonte y nivel de confianza ---
+for (j in 1:m) {
+  sigma <- volatilidad[j]
+  emisora <- colnames(Rend)[j]  # Asegúrate que colnames() sea del mismo objeto que usaste para volatilidad
+  
+  for (h in dias) {
+    fila <- data.frame(Emisora = emisora, Horizonte = h)
+    
+    for (i in seq_along(nc)) {
+      nivel <- nc[i]
+      var <- fVaR(nivel, sigma, h)   # En rendimiento
+      es  <- fES(nivel, sigma, h)   # En rendimiento
+      
+      # Agrega columnas dinámicamente
+      fila[[paste0("VaR", substr(nivel, 3, 4))]] <- var
+      fila[[paste0("ES", substr(nivel, 3, 4))]]  <- es
+    }
+    
+    resultados <- dplyr::bind_rows(resultados, fila)
   }
 }
 
-q<- c() #peso de cada emisora en el portafolio
-for(j in 1:m){
-  q[j]<- d2[n,j]/sum(d2[n,])
+```
+
+
+### Tabla 
+
+```{r}
+
+# --- VaR y ES para el portafolio ---
+for (h in dias) {
+  fila <- data.frame(Emisora = "PT", Horizonte = h)
+  for (i in seq_along(nc)) {
+    nivel <- nc[i]
+    var <- fVaR(nivel, volatilidad.port, h) * sum(valor_invertido)
+    es  <- fES(nivel, volatilidad.port, h) * sum(valor_invertido)
+    fila[[paste0("VaR", substr(nivel, 3, 4))]] <- var
+    fila[[paste0("ES", substr(nivel, 3, 4))]]  <- es
+  }
+  resultados <- rbind(resultados, fila)
 }
-```
- 
-```{r}
-c<- var(Rend)
-cc<- cor(Rend)
-```
 
-```{r}
-q<- as.matrix(q)
-#var(X)=q * Sigma * t(q)
-varianza.port<-t(q) %*% c %*% q
-varianza.port
-
-volatilidad.port<- sqrt(varianza.port)
-volatilidad.port
-VaR.port<- sum(d2[n,])*f*volatilidad.port*sqrt(t)
- VaR.port
+# Mostrar tabla final
+print(resultados)
 ```
 
 
-```{r}
- #vaR individual
-VaR.ind<- c()
-for( j in 1:m){
-  VaR.ind[j]<- VaRp[j]*acciones[j]
-}
-VaR.ind
-sum(VaR.ind)
-```
+
 
 #Delta Normal
 
@@ -1026,7 +1036,7 @@ sum(VaR.ind)
 ### fisher 
 ```{r}
 VaR_ES_CornishFisher <- function(pl_vector, niveles_confianza) {
-  pl_vector <- na.omit(pl_vector)
+  pl_vector <- na.omitt(pl_vector)
   mu <- mean(pl_vector)
   sigma <- sd(pl_vector)
   S <- mean((pl_vector - mu)^3) / sigma^3  # Asimetría
@@ -1106,8 +1116,7 @@ tabla_resumen_CF <- tabla_resumen_CF %>%
   arrange(Emisora, Horizonte, Confianza)
 
 # Vista final
-tabla_resumen_CF
-
+tabla_resumen_CF 
 ```
 
 
