@@ -21,6 +21,9 @@ d1.columns = ['Fecha'] + [f"P{i+1}" for i in range(d1.shape[1] - 1)]
 # Calcular rendimientos porcentuales (omitimos la columna de fecha)
 rendimientos = d1.drop(columns='Fecha').pct_change().dropna()
 
+# Agregar columna de rendimiento promedio del portafolio
+rendimientos['PT'] = rendimientos.mean(axis=1)
+
 # Parámetros
 emisoras = rendimientos.columns.tolist()
 niveles_conf = [0.95, 0.97, 0.99]
