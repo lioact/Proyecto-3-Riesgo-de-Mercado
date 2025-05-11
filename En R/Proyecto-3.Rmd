@@ -629,7 +629,7 @@ for(k in 1:m){
   }
 
 ```{r}
-ggggg
+
 ```
 
 
@@ -637,7 +637,6 @@ ggggg
 
 
 
-Finalmente, se calcula el VaR individual y el VaR del portafolio utilizando métodos paramétricos, los cuales suponen una distribución específica de los rendimientos. Se incluyen las siguientes metodologías: VaR Paramétrico estándar, Delta-Normal, la expansión de Cornish-Fisher y el modelo EWMA (Exponentially Weighted Moving Average). Se mantiene la coherencia en niveles de confianza y horizontes de tiempo respecto a la sección anterior. Esta parte del análisis permite comparar los resultados obtenidos con los métodos no paramétricos y evaluar la sensibilidad del VaR ante diferentes supuestos distribucionales.
 
 
 
