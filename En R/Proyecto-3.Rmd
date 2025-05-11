@@ -545,7 +545,7 @@ for (s in numsim) {
     }
     
     VaRLim[j, ] <- PL_sim  # guardar pérdidas individuales
-
+}
   }
   
 VaR_individual <- apply(VaRLim, 2, quantile, probs = c(0.90, 0.95, 0.99), na.rm = TRUE)
@@ -570,8 +570,6 @@ VaR_individual <- apply(VaRLim, 2, quantile, probs = c(0.90, 0.95, 0.99), na.rm 
   )
 
 ```
-
-
 
 
 **Simulación bootstrap para VaR del portafolio completo**
@@ -613,9 +611,31 @@ for (s in names(VaRconvergencia)) {
 
 
 
-
-
 #VaR Paramétrico
+
+n <- length(d1$P1) #número de días 
+m <- length(d1[1,])  #número de emisoras
+nc <- c(0.95,0.97,0.99) #niveles de confianza
+numsim <- c(5000,10000,20000) #número de simulaciones
+dias <- c(1, 7, 15, 30, 60, 90, 180)  #horizontes de tiempo
+
+Rend <- matrix(NA,nrow = n-1, ncol = m)
+colnames(Rend) <- paste0("P", 1:m)
+
+
+for(k in 1:m){
+  for (j in 1:(n-1)){
+    Rend[j,k] <- d1[j+1,k]/d1[j,k]-1 #discreto
+  }
+
+```{r}
+
+```
+
+
+
+
+
 
 Finalmente, se calcula el VaR individual y el VaR del portafolio utilizando métodos paramétricos, los cuales suponen una distribución específica de los rendimientos. Se incluyen las siguientes metodologías: VaR Paramétrico estándar, Delta-Normal, la expansión de Cornish-Fisher y el modelo EWMA (Exponentially Weighted Moving Average). Se mantiene la coherencia en niveles de confianza y horizontes de tiempo respecto a la sección anterior. Esta parte del análisis permite comparar los resultados obtenidos con los métodos no paramétricos y evaluar la sensibilidad del VaR ante diferentes supuestos distribucionales.
 
