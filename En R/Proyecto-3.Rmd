@@ -26,6 +26,11 @@ library(VGAM) # para ajustar distribuciones
 library(tidyr) # para manipulación de datos
 library(ggplot2) # para graficar
 library(lubridate) # para manipulación de fechas
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(stringr)
+
 ```
 
 **Emisoras**
@@ -42,7 +47,7 @@ d1 <- data.frame(P1=AAPL$AAPL.Close,P2=MSFT$MSFT.Close,P3=NVDA$NVDA.Close,P4=AMZ
 
 ```
 
-```{r, message=FALSE, warning=FALSE}}
+```{r, message=FALSE, warning=FALSE}
 
 d1$Fecha <- index(AAPL)  
 
@@ -144,12 +149,7 @@ for(k in 1:m){
   }
 }
 
-
-```
-
-**VaR ajustado a diferentes horizontes de tiempo**
-
-```{r}
+#VaR ajustado a diferentes horizontes de tiempo
 
 VaRIndD <- list()  #lista de emisoras
 
@@ -164,16 +164,7 @@ for (k in 1:m) {
   rownames(MVaRD) <- paste0(dias, "días")
   VaRIndD[[ colnames(PL)[k] ]] <- MVaRD
 }
-```
-
-
-```{r}
-knitr::kable(VaRIndD[["P1"]], caption = "VaR Individual - Emisora P1")
-```
-
-**ES: Expected Shortfall **
-
-```{r}
+# ES: Expected Shortfall
 VaR_ES <- function(PL, niveles_confianza = c(0.95, 0.97, 0.99)) {
   m <- ncol(PL)  # número de emisoras
   VaR <- matrix(NA, nrow = m, ncol = length(niveles_confianza))
@@ -198,15 +189,35 @@ ES.SH <- VaR_ES(PL) # Calcular VaR y ES
 
 
 ```
+#### Creacion de tabla 
 
-```{r}
-# Mostrar tabla de VaR
-knitr::kable(ES.SH$VaR, caption = "Valor en Riesgo (VaR)", digits = 4)
+```{r, message=FALSE, warning=FALSE}
+#Creacion de tabla 
 
-```
-```{r}
-# Mostrar tabla de ES
-knitr::kable(ES.SH$ES, caption = "Pérdida Esperada (Expected Shortfall, ES)", digits = 4)
+# Combinar todas las tablas en una sola con columna de emisora y horizonte
+tabla_individual <- do.call(rbind, lapply(names(VaRIndD), function(nombre) {
+  df <- as.data.frame(VaRIndD[[nombre]])
+  df$Horizonte <- rownames(df)
+  df$Emisora <- nombre
+  df$ES_95 <- ES.SH$ES[nombre, 1]
+  df$ES_97 <- ES.SH$ES[nombre, 2]
+  df$ES_99 <- ES.SH$ES[nombre, 3]
+  df
+}))
+
+# Reordenar columnas para claridad
+tabla_individual <- tabla_individual[, c("Emisora", "Horizonte", 
+                                         "VaR_95%", "VaR_97%", "VaR_99%", 
+                                         "ES_95", "ES_97", "ES_99")]
+
+## Ordenar por el número que sigue a la 'P'
+tabla_individual <- tabla_individual[order(as.numeric(gsub("P", "", tabla_individual$Emisora)),
+                                           as.numeric(tabla_individual$Horizonte)), ]
+
+
+# Mostrar como tabla en RMarkdown
+tabla_individual
+
 ```
 
 
@@ -522,7 +533,10 @@ VaR_Bootstrap <- quantile(PL_Total, probs = c(0.90, 0.95, 0.99), na.rm = TRUE)
 print(VaR_Bootstrap)
 
 ```
+
+
 **Simulación bootstrap para VaR individual**
+
 ```{r}
 #Individual
 # Suposiciones: ya tienes Rend calculado como una matriz de rendimientos (n-1 x m)
@@ -612,31 +626,29 @@ for (s in names(VaRconvergencia)) {
 
 ```
 
-
+## VaR y ES por Alisado Exponencial 
 
 ```{r}
-# -----------------------------------------------
-# VaR y ES por Alisado Exponencial (versión final)
-# -----------------------------------------------
-
-# alpha ya puede definirse aquí si no se declaró antes
-alpha <- 0.95  # Puedes cambiar a 0.94 o 0.96 si lo deseas
+# Nivel de alisado exponencial
+alpha <- 0.95  # Cambia a 0.94 o 0.96 si lo deseas
 
 # Función para calcular VaR y ES con alisado exponencial
 VaR_ES_alisado <- function(pl_vector, niveles_confianza, alpha = 0.95) {
-  pl_vector <- na.omit(pl_vector)
+  pl_vector <- na.omit(pl_vector)                    # Elimina valores NA
   n <- length(pl_vector)
-  pl_ord <- sort(pl_vector, decreasing = TRUE)
+  pl_ord <- sort(pl_vector, decreasing = TRUE)       # Ordena pérdidas de mayor a menor
   
-  # Pesos exponenciales
+  # Calcula pesos exponenciales normalizados
   pesos <- rev(alpha^(0:(n - 1)) * (1 - alpha))
   pesos <- pesos / sum(pesos)
   
-  Fx <- cumsum(pesos)
-  
+  Fx <- cumsum(pesos)                                # Distribución acumulada
+
+  # Inicializa vectores de resultados
   VaR_vec <- numeric(length(niveles_confianza))
   ES_vec <- numeric(length(niveles_confianza))
   
+  # Calcula VaR y ES para cada nivel de confianza
   for (i in seq_along(niveles_confianza)) {
     c <- niveles_confianza[i]
     idx <- max(which(Fx <= c)) + 1
@@ -647,26 +659,17 @@ VaR_ES_alisado <- function(pl_vector, niveles_confianza, alpha = 0.95) {
   return(list(VaR = VaR_vec, ES = ES_vec))
 }
 
-
-```
-
-
-
-```{r}
-
+# Lista para guardar resultados por emisora
 VaR_Exp <- list()
 
-for (j in 1:ncol(PL)) {
+# Itera por columnas (emisoras) en la matriz PL
+for (j in seq_len(ncol(PL))) {
   nombre <- colnames(PL)[j]
   resultado <- VaR_ES_alisado(PL[, j], nc, alpha)
   
-  VaR_tabla <- matrix(NA, nrow = length(dias), ncol = length(nc))
-  ES_tabla  <- matrix(NA, nrow = length(dias), ncol = length(nc))
-  
-  for (d in seq_along(dias)) {
-    VaR_tabla[d, ] <- resultado$VaR * sqrt(dias[d])
-    ES_tabla[d, ]  <- resultado$ES * sqrt(dias[d])
-  }
+  # Crea tablas de VaR y ES para diferentes horizontes temporales
+  VaR_tabla <- t(sapply(dias, function(d) resultado$VaR * sqrt(d)))
+  ES_tabla  <- t(sapply(dias, function(d) resultado$ES * sqrt(d)))
   
   colnames(VaR_tabla) <- paste0("VaR_", nc * 100, "%")
   rownames(VaR_tabla) <- paste0(dias, " días")
@@ -677,29 +680,60 @@ for (j in 1:ncol(PL)) {
   VaR_Exp[[nombre]] <- list(VaR = VaR_tabla, ES = ES_tabla)
 }
 
-# Crear una tabla resumen con VaR a 1 día para todas las emisoras
-resumen_VaR_1d <- data.frame()
 
-for (nombre in names(VaR_Exp)) {
-  fila <- VaR_Exp[[nombre]]$VaR[1, ]  # Fila 1: horizonte de 1 día
-  fila_df <- data.frame(
-    Emisora = nombre,
-    `VaR_95%` = fila[1],
-    `VaR_97%` = fila[2],
-    `VaR_99%` = fila[3]
-  )
-  resumen_VaR_1d <- rbind(resumen_VaR_1d, fila_df)
-}
-
-# Mostrar tabla en RMarkdown
-resumen_VaR_1d
 
 ```
 
-#VaR Paramétrico
+```{r}
+# 1. Crear tabla resumen en formato largo
+tabla_resumen <- do.call(rbind, lapply(names(VaR_Exp), function(nombre) {
+  var_tabla <- as.data.frame(VaR_Exp[[nombre]]$VaR)
+  es_tabla  <- as.data.frame(VaR_Exp[[nombre]]$ES)
+
+  var_tabla$Horizonte <- rownames(var_tabla)
+  es_tabla$Horizonte  <- rownames(es_tabla)
+
+  # Renombrar columnas para que coincidan
+  colnames(var_tabla) <- gsub("VaR_", "", colnames(var_tabla))
+  colnames(es_tabla)  <- gsub("ES_", "", colnames(es_tabla))
+
+  # Convertir a formato largo
+  var_long <- pivot_longer(var_tabla, cols = -Horizonte, names_to = "Confianza", values_to = "VaR")
+  es_long  <- pivot_longer(es_tabla,  cols = -Horizonte, names_to = "Confianza", values_to = "ES")
+
+  # Unir y agregar nombre de emisora
+  resumen <- left_join(var_long, es_long, by = c("Horizonte", "Confianza"))
+  resumen$Emisora <- nombre
+
+  return(resumen)
+}))
+
+# 2. Reordenar columnas
+tabla_resumen <- tabla_resumen %>%
+  select(Emisora, Horizonte, Confianza, VaR, ES) %>%
+  arrange(Emisora, Horizonte, Confianza)
+
+# 3. Convertir de formato largo a ancho
+tabla_tmp <- tabla_resumen %>%
+  pivot_wider(
+    names_from = Confianza,
+    values_from = c(VaR, ES),
+    names_sep = "_"
+  )
+
+# 4. Limpiar nombres de columnas y seleccionar en el orden deseado
+tabla_final <- tabla_tmp %>%
+  rename_with(~ gsub("%", "", .x)) %>%
+  select(Emisora, Horizonte, VaR_95, VaR_97, VaR_99, ES_95, ES_97, ES_99)
+
+tabla_final <- tabla_final %>%
+  mutate(Emisora = factor(Emisora, levels = paste0("P", sort(as.numeric(str_extract(unique(Emisora), "\\d+")))))) %>%
+  arrange(Emisora, Horizonte)
 
 
-
+# 5. Mostrar tabla final
+tabla_final
+```
 
 
 
