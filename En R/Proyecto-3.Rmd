@@ -134,7 +134,7 @@ for(k in 1:m){
 
 ```
 
-# VaR por Simulación Histórica 
+## VaR por Simulación Histórica 
 
 **VaR individual**
 
@@ -739,6 +739,55 @@ tabla_final
 
 
 
+# Valor en Riesgo no paramétrico
+
+
+
+
+```{r}
+VaR_ES_CornishFisher <- function(pl_vector, niveles_confianza) {
+  pl_vector <- na.omit(pl_vector)
+  mu <- mean(pl_vector)
+  sigma <- sd(pl_vector)
+  S <- mean((pl_vector - mu)^3) / sigma^3  # Asimetría
+  K <- mean((pl_vector - mu)^4) / sigma^4  # Curtosis
+  
+  z <- qnorm(niveles_confianza)
+  
+  # Ajuste Cornish-Fisher
+  z_cf <- z + (1/6)*(z^2 - 1)*S + (1/24)*(z^3 - 3*z)*(K - 3) - (1/36)*(2*z^3 - 5*z)*S^2
+  
+  VaR <- -(mu + z_cf * sigma)
+  
+  # ES paramétrico aproximado (normal ajustado con z_cf)
+  ES <- -(mu + sigma * dnorm(z_cf) / (1 - niveles_confianza))
+  
+  return(list(VaR = VaR, ES = ES))
+}
+
+```
+
+```{r}
+VaR_CF <- list()
+
+for (j in seq_len(ncol(PL))) {
+  nombre <- colnames(PL)[j]
+  resultado <- VaR_ES_CornishFisher(PL[, j], nc)
+  
+  # Expandir con la raíz del tiempo para cada horizonte
+  VaR_tabla <- t(sapply(dias, function(d) resultado$VaR * sqrt(d)))
+  ES_tabla  <- t(sapply(dias, function(d) resultado$ES * sqrt(d)))
+  
+  colnames(VaR_tabla) <- paste0("VaR_", nc * 100, "%")
+  colnames(ES_tabla)  <- paste0("ES_", nc * 100, "%")
+  
+  rownames(VaR_tabla) <- paste0(dias, " días")
+  rownames(ES_tabla)  <- paste0(dias, " días")
+  
+  VaR_CF[[nombre]] <- list(VaR = VaR_tabla, ES = ES_tabla)
+}
+
+```
 
 
 
@@ -747,10 +796,39 @@ tabla_final
 
 
 
+```{r}
 
+tabla_resumen_CF <- do.call(rbind, lapply(names(VaR_CF), function(nombre) {
+  var_tabla <- as.data.frame(VaR_CF[[nombre]]$VaR)
+  es_tabla  <- as.data.frame(VaR_CF[[nombre]]$ES)
+  
+  var_tabla$Horizonte <- rownames(var_tabla)
+  es_tabla$Horizonte  <- rownames(es_tabla)
+  
+  colnames(var_tabla) <- gsub("VaR_", "", colnames(var_tabla))
+  colnames(es_tabla)  <- gsub("ES_", "", colnames(es_tabla))
+  
+  var_long <- pivot_longer(var_tabla, cols = -Horizonte, names_to = "Confianza", values_to = "VaR")
+  es_long  <- pivot_longer(es_tabla,  cols = -Horizonte, names_to = "Confianza", values_to = "ES")
+  
+  resumen <- left_join(var_long, es_long, by = c("Horizonte", "Confianza"))
+  resumen$Emisora <- nombre
+  return(resumen)
+}))
 
+# Ordenar correctamente los horizontes
+tabla_resumen_CF$Horizonte <- factor(tabla_resumen_CF$Horizonte, 
+                                     levels = paste0(dias, " días"), 
+                                     ordered = TRUE)
 
+tabla_resumen_CF <- tabla_resumen_CF %>%
+  select(Emisora, Horizonte, Confianza, VaR, ES) %>%
+  arrange(Emisora, Horizonte, Confianza)
 
+# Vista final
+tabla_resumen_CF
+
+```
 
 
 
