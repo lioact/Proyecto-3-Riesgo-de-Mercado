@@ -111,3 +111,38 @@ tabla_Laplace <- resultados %>%
 
 # Mostrar tabla
 print(tabla_Laplace)
+
+
+
+
+library(gtools)  # Para orden natural (human-like)
+
+# Reemplaza esta línea:
+# arrange(NumSim, Emisora, Horizonte)
+
+# Por esta:
+tabla_Laplace <- tabla_Laplace %>%
+  mutate(Emisora = factor(Emisora, levels = mixedsort(unique(Emisora)))) %>%
+  arrange(NumSim, Emisora, Horizonte)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

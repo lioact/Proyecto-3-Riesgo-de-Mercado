@@ -60,5 +60,26 @@ for (emisora in colnames(rendimientos)) {
 tabla_Cornish <- tabla_CF %>%
   arrange(Emisora, Horizonte)
 
+library(gtools)
+
+tabla_Cornish <- tabla_CF %>%
+  mutate(Emisora = factor(Emisora, levels = mixedsort(unique(Emisora)))) %>%
+  arrange(Emisora, Horizonte)
+
+
+
+
+
+
+
+
+
+
 # Mostrar tabla
 print(tabla_Cornish)
+
+
+
+
+
+

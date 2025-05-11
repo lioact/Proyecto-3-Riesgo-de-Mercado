@@ -59,5 +59,47 @@ tabla_Alisado <- resumen %>%
   select(Emisora, Horizonte, starts_with("VaR"), starts_with("ES")) %>%
   arrange(Emisora, Horizonte)
 
+library(gtools)  # Para orden natural (P1, P2, ..., P10)
+
+tabla_Alisado <- resumen %>%
+  select(Emisora, Horizonte, starts_with("VaR"), starts_with("ES")) %>%
+  mutate(Emisora = factor(Emisora, levels = mixedsort(unique(Emisora)))) %>%
+  arrange(Emisora, Horizonte)
+
+
+
+
+
 # Mostrar tabla
 print(tabla_Alisado)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
