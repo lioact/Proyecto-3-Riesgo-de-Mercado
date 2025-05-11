@@ -136,9 +136,11 @@ for(k in 1:m){
 
 ## VaR por Simulación Histórica 
 
-**VaR individual**
+**VaR individual y de portafolio**
 
 ```{r}
+PL <- cbind(PL, PT = rowSums(PL, na.rm = TRUE))
+m <- ncol(PL)  # esto ya incluye la columna PT al final
 VaRInd <- matrix(nrow = m, ncol = length(nc))
 colnames(VaRInd) <- c("VaR_95%","VaR_97%","VaR_99%")
 rownames(VaRInd) <- colnames(PL)[1:m]
@@ -186,6 +188,20 @@ VaR_ES <- function(PL, niveles_confianza = c(0.95, 0.97, 0.99)) {
 }
 
 ES.SH <- VaR_ES(PL) # Calcular VaR y ES
+# ES ajustado a diferentes horizontes de tiempo
+ESIndD <- list()
+
+for (k in 1:m) {
+  MESD <- matrix(nrow = length(dias), ncol = length(nc))
+  for (i in seq_along(dias)) {
+    for (j in seq_along(nc)) {
+      MESD[i, j] <- ES.SH$ES[k, j] * sqrt(dias[i])
+    }
+  }
+  colnames(MESD) <- paste0("ES_", nc * 100, "%")
+  rownames(MESD) <- paste0(dias, "días")
+  ESIndD[[colnames(PL)[k]]] <- MESD
+}
 
 
 ```
@@ -197,9 +213,10 @@ tabla_individual <- do.call(rbind, lapply(names(VaRIndD), function(nombre) {
   df <- as.data.frame(VaRIndD[[nombre]])
   df$Horizonte <- rownames(df)
   df$Emisora <- nombre
-  df$ES_95 <- ES.SH$ES[nombre, 1]
-  df$ES_97 <- ES.SH$ES[nombre, 2]
-  df$ES_99 <- ES.SH$ES[nombre, 3]
+  df$ES_95 <- ESIndD[[nombre]][, 1]
+  df$ES_97 <- ESIndD[[nombre]][, 2]
+  df$ES_99 <- ESIndD[[nombre]][, 3]
+
   df
 }))
 
@@ -219,191 +236,250 @@ tabla_individual
 ```
 
 
-## VaR individual por Simulación Monte Carlo Normal 
-```{r, warning=FALSE}
 
+
+
+
+
+
+
+
+
+
+
+
+
+## VaR individual y de portafolio por Simulación Monte Carlo Normal 
+```{r, warning=FALSE}
+# Extraer fechas y datos numéricos
+fechas <- d1[[which(sapply(d1, inherits, "Date"))]]
+d1 <- d1[, sapply(d1, is.numeric)]
+
+# Estimar parámetros mu y sigma para cada emisora
 y <- function(x) {
   mod <- fitdist(x[!is.na(x)], "norm", method = "mle")
   return(mod$estimate)
 }
-
 p <- apply(Rend, 2, y)
 muv <- p[1, ]
 sigmav <- p[2, ]
 
-```
+emisoras <- colnames(d1)
+precio_actuales <- as.numeric(d1[n, ])
+resultados <- data.frame()
+numsim_vec <- c(5000, 10000, 20000)
 
+set.seed(123)
 
-
-```{r, warning=FALSE}
-y(Rend[,1])
-```
-
-
-
-```{r}
-set.seed(350)
-RendSM <- matrix(NA, nrow = n, ncol = m)
-RevalSM <- matrix(NA, nrow = n, ncol = m)
-PLSM <- matrix(NA, nrow = n, ncol = m)
-colnames(RendSM) <- colnames(RevalSM) <- colnames(PLSM) <- colnames(RendSM)
-
-#Simulaciones
-for (j in 1:m) {  #por emisora
-  mu <- muv[j]
-  sigma <- sigmav[j]
-  PA <- d1[n, j]  #precio actual
-
-  for (k in 1:n) {  # por día
-    RendSM[k, j] <- rnorm(1, mu, sigma)
-    RevalSM[k, j] <- PA * (1 + RendSM[k, j])
-    PLSM[k, j] <- PA - RevalSM[k, j]
-  }
-}
-
-```
-
-```{r}
-# Creacion de tabla para visualizacion 
-# Calcular resumen estadístico
-resumen_mat <- apply(PLSM, 2, summary)  # columnas = emisoras
-resumen_df <- as.data.frame(t(resumen_mat))
-
-resumen_df$Emisora <- c("P1", "P2", "P3", "P4", "P5","P6", "P7", "P8", "P9", "P10","P11", "P12", "P13", "P14", "P15","P16", "P17", "P18", "P19","P20")
-
-resumen_df <- resumen_df[, c("Emisora", setdiff(names(resumen_df), "Emisora"))]
-
-
-```
-
-
-```{r}
-
-# Mostrar con kable
-knitr::kable(resumen_df,
-             caption = "Resumen estadístico de las pérdidas simuladas (PLSM)",
-             digits = 4)
-
-```
-
-```{r}
-VaRSMd <- list()  #VaR diarios escalados
-
-for (j in 1:m) {
-  ne <- colnames(PL)[j]
-  
-  VaRd <- quantile(PL[, j], probs = nc, na.rm = TRUE)  #VaR diario
-  
-  VaRe <- matrix(NA, nrow = length(dias), ncol = length(nc)) #escalado a ht
-  colnames(VaRe) <- paste0("VaR_", nc * 100, "%")
-  rownames(VaRe) <- paste0(dias, " días")
-  
-  for (i in 1:length(dias)) {
-    VaRe[i, ] <- as.numeric(VaRd) * sqrt(dias[i])
-  }
-  VaRSMd[[ne]] <- VaRe
-}
-
-```
-
-```{r}
-knitr::kable(VaRSMd[["P1"]], digits = 4)
-
-```
-
-```{r, warning=FALSE}
-VaRconv <- list()  #resultados por emisora
-
-for (p in 1:m) {
-  ysm <- na.omit(Rend[, p])
-  nombre <- colnames(Rend)[p]
-  
-  mod <- fitdist(ysm, "norm", method = "mle")  #Estimar parámetros normales
-  mu <- mod$estimate[1]
-  sigma <- mod$estimate[2]
-  
-  pf <- d1[nrow(d1), p]  #último precio
-  
-  VaRnumsim <- list()   #distintos tamaños de simulación
-  
-  for (nsim in numsim) {
-    VaRm <- matrix(NA, nrow = nsim, ncol = length(nc))
-    colnames(VaRm) <- paste0("VaR_", nc * 100, "%")
+for (s in numsim_vec) {
+  # Emisoras individuales
+  for (j in seq_along(emisoras)) {
+    mu <- muv[j]
+    sigma <- sigmav[j]
+    precio_actual <- precio_actuales[j]
     
-    plhist <- numeric(0)  # vector acumulativo de pérdidas simuladas
-    
-    for (j in 1:nsim) {
-      rendsim <- rnorm(1, mu, sigma)
-      reval <- pf * (1 + rendsim)
-      pl <- pf - reval
+    for (h in dias) {
+      sim_rend <- matrix(rnorm(s * h, mu, sigma), ncol = h)
+      sim_acum <- rowSums(sim_rend)
+      sim_precios <- precio_actual * (1 + sim_acum)
+      sim_perdidas <- precio_actual - sim_precios
       
-      plhist <- c(plhist, pl)
-      
-      for (i in seq_along(nc)) {
-        VaRm[j, i] <- quantile(plhist, nc[i], na.rm = TRUE)
+      for (conf in nc) {
+        var <- quantile(sim_perdidas, probs = conf, na.rm = TRUE)
+        es <- mean(sim_perdidas[sim_perdidas > var], na.rm = TRUE)
+        
+        resultados <- rbind(resultados, data.frame(
+          NumSim = s,
+          Emisora = emisoras[j],
+          Horizonte = h,
+          Confianza = conf,
+          VaR = var,
+          ES = es
+        ))
       }
     }
-    
-    VaRnumsim[[as.character(nsim)]] <- VaRm
   }
+
+  # Portafolio
+  mu_port <- mean(rowMeans(Rend, na.rm = TRUE))
+  sigma_port <- sd(rowMeans(Rend, na.rm = TRUE))
+  precio_port <- sum(precio_actuales)
   
-  VaRconv[[nombre]] <- VaRnumsim
-}
-
-```
-
-
-
-```{r}
-resVaR <- data.frame() #promedios finales
-
-for (emisora in names(VaRconv)) {
-  for (nsim in names(VaRconv[[emisora]])) {
-    matrizVaR <- VaRconv[[emisora]][[nsim]]
+  for (h in dias) {
+    sim_rend <- matrix(rnorm(s * h, mu_port, sigma_port), ncol = h)
+    sim_acum <- rowSums(sim_rend)
+    sim_precios <- precio_port * (1 + sim_acum)
+    sim_perdidas <- precio_port - sim_precios
     
-    promedios <- colMeans(matrizVaR, na.rm = TRUE)
-    
-    temp <- data.frame(
-      Emisora = emisora,
-      Simulaciones = as.integer(nsim),
-      Nivel_Confianza = names(promedios),
-      VaR_Promedio = as.numeric(promedios)
-    )
-    
-    resVaR <- bind_rows(resVaR, temp)
+    for (conf in nc) {
+      var <- quantile(sim_perdidas, probs = conf, na.rm = TRUE)
+      es <- mean(sim_perdidas[sim_perdidas > var], na.rm = TRUE)
+      
+      resultados <- rbind(resultados, data.frame(
+        NumSim = s,
+        Emisora = "PT",
+        Horizonte = h,
+        Confianza = conf,
+        VaR = var,
+        ES = es
+      ))
+    }
   }
 }
 
-```
+# Reformatear a tabla final
+tabla_final <- resultados %>%
+  pivot_wider(
+    names_from = Confianza,
+    values_from = c(VaR, ES),
+    names_glue = "{.value}{round(100 * Confianza)}"
+  ) %>%
+  mutate(Emisora_num = ifelse(Emisora == "PT", Inf, as.numeric(gsub("P", "", Emisora)))) %>%
+  arrange(NumSim, Emisora_num, Horizonte) %>%
+  select(NumSim, Emisora, Horizonte, starts_with("VaR"), starts_with("ES"))
 
-
-
-```{r}
-
-knitr::kable(resVaR, caption = "VaR promedio por emisora y número de simulaciones (Simulación Monte Carlo Normal)", digits = 4,align = "c")
-
-```
-
-**Expected Shortfall SM-Normal**
-```{r}
-
-rownames(ES.MC$ES) <- colnames(PLSM)  # Asegurarse de que coincidan con los nombres de las emisoras
-
-# Convertir la matriz a un data.frame
-ES_df <- as.data.frame(ES.MC$ES)
-
-# Agregar columna "Emisora" explícitamente
-ES_df$Emisora <- rownames(ES_df)
-
-# Reordenar columnas para que "Emisora" esté primero
-ES_df <- ES_df[, c("Emisora", setdiff(names(ES_df), "Emisora"))]
-
-# Imprimir la tabla con knitr::kable
-knitr::kable(ES_df, caption = "Expected Shortfall (ES) por Simulación Monte Carlo Normal",digits = 4)
+tabla_final
 
 ```
+
 
 ## VaR individual por Simulación Monte Carlo Laplace
+
+
+
+```{r, warning=FALSE, message=FALSE}
+
+# === 1. Estimar parámetros Laplace por emisora ===
+ajustar_laplace <- function(x) {
+  datos <- x[!is.na(x)]
+  mod <- vglm(datos ~ 1, laplace, trace = FALSE)
+  coef(mod)
+}
+param_laplace <- apply(Rend, 2, ajustar_laplace)
+mu_lap <- param_laplace[1, ]
+b_lap <- param_laplace[2, ]
+
+emisoras <- colnames(Rend)
+precio_actuales <- as.numeric(d1[n, ])
+resultados <- data.frame()
+numsim_vec <- c(5000, 10000, 20000)
+
+set.seed(123)
+
+# === 2. Simulación por emisora ===
+for (s in numsim_vec) {
+  for (j in seq_along(emisoras)) {
+    mu <- mu_lap[j]
+    b <- max(b_lap[j], 1e-6)  # asegura que b > 0
+    precio_actual <- precio_actuales[j]
+    
+    for (h in dias) {
+      sim_rend <- matrix(rlaplace(s * h, location = mu, scale = b), ncol = h)
+      sim_acum <- rowSums(sim_rend)
+      sim_precios <- precio_actual * (1 + sim_acum)
+      sim_perdidas <- precio_actual - sim_precios
+      
+      for (conf in nc) {
+        var <- quantile(sim_perdidas, probs = conf, na.rm = TRUE)
+        es <- mean(sim_perdidas[sim_perdidas > var], na.rm = TRUE)
+        
+        resultados <- rbind(resultados, data.frame(
+          NumSim = s,
+          Emisora = emisoras[j],
+          Horizonte = h,
+          Confianza = conf,
+          VaR = var,
+          ES = es
+        ))
+      }
+    }
+  }
+  
+  # === 3. Simulación del Portafolio ===
+  mu_pt <- mean(rowMeans(Rend, na.rm = TRUE))
+  sigma_pt <- sd(rowMeans(Rend, na.rm = TRUE))
+  mu_pt_lap <- mu_pt
+  b_pt_lap <- max(sigma_pt / sqrt(2), 1e-6)
+  precio_pt <- sum(precio_actuales)
+  
+  for (h in dias) {
+    sim_rend <- matrix(rlaplace(s * h, location = mu_pt_lap, scale = b_pt_lap), ncol = h)
+    sim_acum <- rowSums(sim_rend)
+    sim_precios <- precio_pt * (1 + sim_acum)
+    sim_perdidas <- precio_pt - sim_precios
+    
+    for (conf in nc) {
+      var <- quantile(sim_perdidas, probs = conf, na.rm = TRUE)
+      es <- mean(sim_perdidas[sim_perdidas > var], na.rm = TRUE)
+      
+      resultados <- rbind(resultados, data.frame(
+        NumSim = s,
+        Emisora = "PT",
+        Horizonte = h,
+        Confianza = conf,
+        VaR = var,
+        ES = es
+      ))
+    }
+  }
+}
+
+# === 4. Reformatear resultados en tabla deseada ===
+tabla_final <- resultados %>%
+  pivot_wider(
+    names_from = Confianza,
+    values_from = c(VaR, ES),
+    names_glue = "{.value}{round(100 * Confianza)}"
+  ) %>%
+  mutate(Emisora_num = ifelse(Emisora == "PT", Inf, as.numeric(gsub("P", "", Emisora)))) %>%
+  arrange(NumSim, Emisora_num, Horizonte) %>%
+  select(NumSim, Emisora, Horizonte, starts_with("VaR"), starts_with("ES"))
+
+# Mostrar tabla
+tabla_final
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```{r, warning=FALSE, message=FALSE}
 
 #Ajustamos distribución Laplace a los rendimientos
@@ -499,6 +575,136 @@ knitr::kable(
 
 
 ##Simulación Bootstrapping
+
+
+```{r}
+emisoras <- colnames(Rend)
+precio_actuales <- d1[n, ]  # precios actuales
+resultados <- data.frame()
+
+set.seed(123)
+
+# Simulación por emisora
+for (s in numsim_vec) {
+  for (j in seq_along(emisoras)) {
+    y <- Rend[, j]
+    precio <- precio_actuales[j]
+    
+    for (h in dias) {
+      sim_rend <- matrix(sample(y, s * h, replace = TRUE), ncol = h)
+      sim_acum <- rowSums(sim_rend)
+      sim_precios <- precio * (1 + sim_acum)
+      sim_perdidas <- precio - sim_precios
+      
+      vars <- sapply(nc, function(conf) quantile(sim_perdidas, probs = conf, na.rm = TRUE))
+      ess <- sapply(vars, function(v) {
+     perdidas_extremas <- sim_perdidas_pt[sim_perdidas_pt > v]
+      if (length(perdidas_extremas) == 0) {
+    return(NA_real_)
+   } else {
+    return(mean(perdidas_extremas, na.rm = TRUE))
+  }
+})
+
+      
+      resultados <- rbind(resultados, data.frame(
+        NumSim = s,
+        Emisora = emisoras[j],
+        Horizonte = h,
+        VaR95 = vars[1], VaR97 = vars[2], VaR99 = vars[3],
+        ES95 = ess[1], ES97 = ess[2], ES99 = ess[3]
+      ))
+    }
+  }
+
+  # Simulación para el portafolio completo
+  for (h in dias) {
+  sim_perdidas_pt <- numeric(s)
+  
+  for (i in 1:s) {
+    pl_total <- 0
+    for (j in seq_along(emisoras)) {
+      y <- as.numeric(Rend[, j])
+      y <- y[!is.na(y)]  # quitar NAs
+      
+      if (length(y) == 0 || is.na(precio_actuales[j])) {
+        next  # saltar si no hay datos válidos
+      }
+      
+      r <- sample(y, h, replace = TRUE)
+      rend_acum <- sum(r, na.rm = TRUE)
+      
+      precio <- precio_actuales[j]
+      reval <- precio * (1 + rend_acum)
+      pl <- precio - reval
+      pl_total <- pl_total + pl
+    }
+    sim_perdidas_pt[i] <- pl_total
+  }
+
+  # Validar que sim_perdidas_pt tenga valores numéricos válidos
+  sim_perdidas_pt <- sim_perdidas_pt[!is.na(sim_perdidas_pt)]
+
+  if (length(sim_perdidas_pt) > 0) {
+    vars <- sapply(nc, function(conf) quantile(sim_perdidas_pt, probs = conf, na.rm = TRUE))
+    ess <- sapply(vars, function(v) {
+      losses <- sim_perdidas_pt[sim_perdidas_pt > v]
+      if (length(losses) > 0) mean(losses) else NA
+    })
+    
+    resultados <- rbind(resultados, data.frame(
+      NumSim = s,
+      Emisora = "PT",
+      Horizonte = h,
+      VaR95 = vars[1], VaR97 = vars[2], VaR99 = vars[3],
+      ES95 = ess[1], ES97 = ess[2], ES99 = ess[3]
+    ))
+  }
+  }
+}
+
+# Mostrar tabla
+knitr::kable(
+  resultados,
+  caption = "Simulación Bootstrap Multivariada - VaR y ES por Emisora y Portafolio",
+  digits = 4,
+  align = "c"
+)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 **Simulación Bootstrapping multivariada del portafolio**
