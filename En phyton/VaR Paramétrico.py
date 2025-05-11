@@ -69,4 +69,4 @@ tabla_parametrico['Emisora_num'] = tabla_parametrico['Emisora'].apply(lambda x: 
 tabla_parametrico = tabla_parametrico.sort_values(by=['Emisora_num', 'Horizonte']).drop(columns='Emisora_num')
 
 # Mostrar resultado
-print(tabla_parametrico.head(10))  # Puedes ajustar la cantidad mostrada
+print(tabla_parametrico.head(10))  

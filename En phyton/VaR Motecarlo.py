@@ -97,4 +97,4 @@ tabla_Montecarlo['Emisora_num'] = tabla_Montecarlo['Emisora'].apply(lambda x: fl
 tabla_Montecarlo = tabla_Montecarlo.sort_values(by=['NumSim', 'Emisora_num', 'Horizonte']).drop(columns='Emisora_num')
 
 # Mostrar tabla
-print(tabla_Montecarlo.head(10))  # puedes mostrar más si lo deseas
+print(tabla_Montecarlo.head(10))
