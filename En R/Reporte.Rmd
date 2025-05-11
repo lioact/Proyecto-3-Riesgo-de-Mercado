@@ -334,7 +334,7 @@ df_p1_long <- df_p1 %>%
 ggplot(df_p1_long, aes(x = Horizonte, y = VaR, color = Confianza, group = Confianza)) +
   geom_line(size = 1) +
   geom_point(size = 2) +
-  labs(title = "VaR por Simulación Histórica - Emisora P1",
+  labs(title = "VaR por Simulación Histórica  AAPL",
        x = "Horizonte de tiempo",
        y = "Valor en Riesgo (VaR)",
        color = "Nivel de Confianza") +
@@ -346,6 +346,13 @@ ggplot(df_p1_long, aes(x = Horizonte, y = VaR, color = Confianza, group = Confia
   )
 
 ```
+Este gráfico muestra cómo varía el Valor en Riesgo (VaR) de la emisora P1 en distintos horizontes de tiempo (1, 7, 15, 30, 60, 90 y 180 días) y para tres niveles de confianza (95%, 97%, 99%).
+
+-A mayor horizonte de tiempo, el VaR aumenta. Esto tiene sentido porque al extender el plazo, hay más exposición al riesgo y, por tanto, mayor posibilidad de una pérdida acumulada.
+
+-A mayor nivel de confianza, el VaR también aumenta. Esto refleja que si se quiere tener más certeza de no perder más que una cantidad determinada, se debe asumir un peor escenario (una mayor pérdida).
+
+-La forma ascendente del gráfico confirma que el riesgo crece en escenarios más extremos y en plazos más largos.
 
 ```{r, message=FALSE, warning=FALSE,echo = FALSE	}
 # Filtrar por emisora
@@ -364,7 +371,7 @@ ggplot(df_p1_es_long, aes(x = Horizonte, y = ES, color = Confianza, group = Conf
   geom_line(size = 1) +
   geom_point(size = 2) +
   scale_color_manual(values = c("ES_95" = "#E69F00", "ES_97" = "#56B4E9", "ES_99" = "#009E73")) +
-  labs(title = "Expected Shortfall por Simulación Histórica - Emisora P1",
+  labs(title = "Expected Shortfall por Simulación Histórica AAPL",
        x = "Horizonte de tiempo",
        y = "Expected Shortfall (ES)",
        color = "Nivel de Confianza") +
@@ -376,10 +383,24 @@ ggplot(df_p1_es_long, aes(x = Horizonte, y = ES, color = Confianza, group = Conf
   )
 
 ```
+Este gráfico complementa al anterior y muestra el Expected Shortfall (ES) para la misma emisora P1, también en distintos horizontes de tiempo y niveles de confianza.
 
-Los resultados obtenidos muestran cómo el **VaR** y la **ES** varían según el horizonte de tiempo y el nivel de confianza. En general, a medida que aumenta el nivel de confianza, tanto el VaR como la ES aumentan, reflejando un mayor riesgo de pérdida en situaciones extremas. Esto es consistente con la naturaleza de estos indicadores, que buscan capturar los eventos de cola de la distribución.
 
 
+-El ES es siempre mayor que el VaR, ya que mide el promedio de las pérdidas que superan al VaR. En otras palabras, qué tan graves pueden ser las pérdidas en el peor 1%, 3% o 5% de los casos.
+
+-A medida que aumenta el horizonte o el nivel de confianza, el ES también crece significativamente.
+
+-Este gráfico muestra que las pérdidas extremas son más severas de lo que el VaR por sí solo indica, lo cual resalta la utilidad del ES como medida complementaria del riesgo.
+
+Los resultados obtenidos muestran cómo el VaR y la ES varían según el horizonte de tiempo y el nivel de confianza. En general, a medida que aumenta el nivel de confianza, tanto el VaR como la ES aumentan, reflejando un mayor riesgo de pérdida en situaciones extremas. Esto es consistente con la naturaleza de estos indicadores, que buscan capturar los eventos de cola de la distribución.
+
+
+
+
+Con el objetivo de identificar las emisoras que presentan mayor exposición al riesgo extremo, se construyó la siguiente tabla que muestra el Top 10 de emisoras con los valores más altos de VaR al 99% en un horizonte de 180 días. Este nivel de confianza refleja escenarios de pérdidas severas, que podrían ocurrir solo en el 1% de los casos más desfavorables según el comportamiento histórico.
+
+La tabla permite identificar rápidamente qué activos individuales representan el mayor riesgo potencial dentro del portafolio en términos de pérdidas extremas. Estos resultados son especialmente útiles para la gestión del riesgo, ya que facilitan decisiones como el ajuste del peso de ciertos activos o la implementación de estrategias de cobertura. En particular, emisoras con alto VaR tienden a ser más volátiles o sensibles a choques de mercado, por lo que requieren un seguimiento más riguroso. condiciones de mercado más extremas.
 ```{r, message=FALSE, warning=FALSE,echo = FALSE	}
 library(dplyr)
 library(knitr)
@@ -400,22 +421,13 @@ kable(top10_var_unico, caption = "Top 10 VaR al 99% ")
 ```
 
 
-Por ejemplo, para emisoras como **Tesla (TSLA)**, que suelen ser más volátiles, los valores de VaR y ES son considerablemente más altos que para emisoras más estables como **Johnson & Johnson (JNJ)**. Este comportamiento sugiere que, en términos de riesgo, las emisoras más volátiles requieren un monitoreo más cercano y, posiblemente, estrategias de cobertura.
+Los resultados de la tabla muestran que el portafolio total (PT) presenta el mayor VaR, seguido por emisoras como TSLA (P9), NVDA (P3) y NFLX (P16), que son conocidas por su alta volatilidad y sensibilidad a cambios en el mercado. Estos valores reflejan que dichas acciones son las más expuestas a pérdidas extremas bajo condiciones similares a las históricas.
 
-Además, el cálculo de la **Pérdida Esperada (ES)** complementa el análisis de VaR, ya que no solo mide la pérdida máxima esperada, sino también la magnitud promedio de las pérdidas en el extremo de la distribución. En muchas ocasiones, la **ES** es significativamente mayor que el **VaR**, especialmente para los niveles de confianza más altos, lo que indica que las pérdidas extremas pueden ser considerablemente más graves que las pérdidas típicas.
+En contraste, emisoras como INTC (P11) o F (P13), aunque también aparecen en el top 10, presentan un nivel de riesgo algo menor, posiblemente por una menor volatilidad o menor correlación con shocks de mercado globales.
 
+Esto resalta la importancia de considerar no solo el rendimiento esperado, sino también el perfil de riesgo extremo de cada activo al construir y gestionar un portafolio diversificado.
 
-
-
-### Portafolio Total
-
-El análisis del **VaR** y **ES** del **portafolio total (PT)** muestra cómo el riesgo agregado de las emisoras individuales se comporta en conjunto. En general, la diversificación del portafolio puede reducir el VaR total, ya que los rendimientos de las diferentes emisoras no están completamente correlacionados. Sin embargo, si el portafolio está compuesto por emisoras altamente correlacionadas, el riesgo total podría ser mayor, reflejando un mayor VaR y ES.
-
-La comparación entre los valores de VaR y ES del portafolio y las emisoras individuales permite evaluar el impacto de la **diversificación** en la mitigación del riesgo. En general, un portafolio diversificado tiende a presentar valores de VaR y ES más bajos que la simple suma de los VaRs de las emisoras individuales.
-
-
-
-
+## Simulación de Monte Carlo
 
 
 
