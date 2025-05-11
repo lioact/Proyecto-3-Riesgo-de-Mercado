@@ -747,11 +747,82 @@ tabla_final
 
 
 
-# Valor en Riesgo no paramétrico
+# Valor en Riesgo paramétrico
+
+#VaR Paramétrico
+
+```{r}
+#VaR paramétrico para cada emisora
+f<- qnorm(nc,0,1) #nivel de riesgo con una N(0,1)
+t<- 1 #plazo expresado en días
+volatilidad<- c()
+
+for(j in 1:m){ #en este caso j representa al número de los emisoras
+  volatilidad[j]<- sd(Rend[,j])
+}
+
+VaRp<- c()
+
+for(j in 1:m){
+  VaRp[j]<- d1[n,j]*f*volatilidad[j]*sqrt(t)
+}
+```
+```{r}
+#VaR paramétrico para un portafolio de inversión
+acciones<- rep(1000,m)
+d2<- matrix(data=NA, nrow=n, ncol=m)
+
+for(j in 1:m){
+  for (k in 1:n){
+    d2[k,j]<- d1[k,j]*acciones[j]
+  }
+}
+
+q<- c() #peso de cada emisora en el portafolio
+for(j in 1:m){
+  q[j]<- d2[n,j]/sum(d2[n,])
+}
+```
+ 
+```{r}
+c<- var(Rend)
+cc<- cor(Rend)
+```
+
+```{r}
+q<- as.matrix(q)
+#var(X)=q * Sigma * t(q)
+varianza.port<-t(q) %*% c %*% q
+varianza.port
+
+volatilidad.port<- sqrt(varianza.port)
+volatilidad.port
+VaR.port<- sum(d2[n,])*f*volatilidad.port*sqrt(t)
+ VaR.port
+```
+
+
+```{r}
+ #vaR individual
+VaR.ind<- c()
+for( j in 1:m){
+  VaR.ind[j]<- VaRp[j]*acciones[j]
+}
+VaR.ind
+sum(VaR.ind)
+```
+
+#Delta Normal
+
+```{r}
+
+```
 
 
 
 
+
+### fisher 
 ```{r}
 VaR_ES_CornishFisher <- function(pl_vector, niveles_confianza) {
   pl_vector <- na.omit(pl_vector)
