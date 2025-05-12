@@ -22,9 +22,7 @@ An investment portfolio was constructed consisting of 20 stocks from companies b
 
 #  Introducción
 
-En el ámbito financiero, la gestión de riesgos constituye una de las actividades más importantes para la toma de decisiones estratégicas. Una de las herramientas más utilizadas para cuantificar el riesgo de mercado es el Valor en Riesgo (VaR, por sus siglas en inglés), el cual mide la pérdida máxima esperada de un portafolio financiero en un horizonte temporal dado, bajo un nivel de confianza específico. Complementariamente, se utiliza el Expected Shortfall (ES), también conocido como pérdida esperada, que estima la pérdida promedio en los escenarios en los que el VaR es superado.
-
-En este trabajo se realiza una estimación del VaR y del ES mediante simulación Monte Carlo, asumiendo que los rendimientos siguen una distribución normal. Se aplica esta metodología a una serie de emisoras financieras, considerando distintos niveles de confianza (95%, 97.5% y 99%) y diferentes horizontes temporales (1, 5 y 10 días).
+En el ámbito financiero, la gestión de riesgos constituye una de las actividades más importantes para la toma de decisiones estratégicas. Una de las herramientas más utilizadas para cuantificar el riesgo de mercado es el Valor en Riesgo (VaR, por sus siglas en inglés), el cual mide la pérdida máxima esperada de un portafolio financiero en un horizonte temporal dado, bajo un nivel de confianza específico. Complementariamente, se utiliza el Expected Shortfall (ES), también conocido como pérdida esperada, que estima la pérdida promedio en los escenarios en los que el VaR es superado, todo esto usando los lenguajes de programación mas populares dentro del area; R y Python.
 
 El objetivo principal es identificar cuáles emisoras presentan mayor exposición al riesgo bajo diferentes escenarios, y analizar el comportamiento del riesgo agregado del portafolio completo. Esta información permite inferir decisiones clave para estrategias de cobertura, asignación de activos y control de riesgos.
 
@@ -278,7 +276,7 @@ ggplot(Rend_larga, aes(x = Fecha, y = Rendimiento, color = Ticker)) +
 ```
 
 
-# Valor en Riesgo no paramétrico
+# VaR No Paramétricos
 
 
 En esta sección se calcula el Valor en Riesgo (VaR) individual y para el portafolio, utilizando varios métodos no paramétricos. Estos métodos permiten estimar el riesgo de pérdida sin hacer suposiciones sobre la distribución específica de los rendimientos, lo cual es útil para la estimación del riesgo en situaciones donde los datos no siguen distribuciones conocidas o estándar.
@@ -343,7 +341,7 @@ df_p1_long <- df_p1 %>%
 ggplot(df_p1_long, aes(x = Horizonte, y = VaR, color = Confianza, group = Confianza)) +
   geom_line(size = 1) +
   geom_point(size = 2) +
-  labs(title = "VaR por Simulación Histórica del APPL",
+  labs(title = "VaR por Simulación Histórica de APPL",
        x = "Horizonte de tiempo",
        y = "Valor en Riesgo (VaR)",
        color = "Nivel de Confianza") +
@@ -559,7 +557,7 @@ Emisoras como WMT (P10) muestran VaR y ES mucho menos negativos, lo que indica u
 
 
 
-## Alisamiento exponencial
+## Alisamiento Exponencial
 
 
 
@@ -595,7 +593,7 @@ $$
 
 donde $\phi(z_\alpha)$ es la función de densidad de la normal estándar evaluada en $z_\alpha$.
 
-En resumen, el modelo EWMA aplicado sobre los rendimientos simples del portafolio permitió estimar un VaR dinámico y adaptado a las condiciones recientes del mercado. Aunque suponer una distribución normal implica ciertas limitaciones, la flexibilidad del alisado exponencial ofreció una herramienta útil para evaluar el riesgo financiero de forma más sensible a los cambios del entorno.
+En resumen, el modelo aplicado sobre los rendimientos simples del portafolio permitió estimar un VaR dinámico y adaptado a las condiciones recientes del mercado. Aunque suponer una distribución normal implica ciertas limitaciones, la flexibilidad del alisado exponencial ofreció una herramienta útil para evaluar el riesgo financiero de forma más sensible a los cambios del entorno.
 
 
 
@@ -611,7 +609,7 @@ library(dplyr)
 tabla_Alisado <- read_excel("Resultados VaR/tabla_Alisado.xlsx")
 
 # Mostrar los primeros registros de forma bonita con kable
-kable(sample_n(tabla_Alisado, 15), caption = "VaR Historico")
+kable(sample_n(tabla_Alisado, 15), caption = "VaR Alisamiento Exponencial")
 
 
 ```
@@ -652,6 +650,42 @@ En resumen, este gráfico ilustra cómo el riesgo de cola del portafolio no es h
 
 
 
+# VaR Paramétricos
+
+## VaR Paramétrico
+
+En esta sección del proyecto aplicamos el modelo de Valor en Riesgo (VaR) Paramétrico, esto para estimar la pérdida máxima esperada en un portafolio financiero bajo condiciones normales de mercado. Este enfoque lo usamos para los horizontes de tiempo 1, 7, 15, 30, 60, 90 y 180 días, y considerando los niveles de confianza: 95%, 97% y 99%.
+
+Para este módelo asuminos que los rendimientos de los activos siguen una distribución normal, y que es posible calcular el valor del portafolio como una función (lineal o no lineal) de los factores de riesgo.
+
+Asumiendo una distribución normal de los rendimientos, el VaR paramétrico se calcula como:
+
+$$
+VaR = \mu_p + z_{\alpha} \cdot \sigma_p
+$$
+Donde:
+
+$(\mu_p)$ es el rendimiento esperado del portafolio.
+$(\sigma_p)$ es la desviación estándar del portafolio.
+$(z_{\alpha})$ es el cuantil correspondiente al nivel de confianza 
+
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora utilizada, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamnete con cada nivel de confianza (95%, 97%, 99%).
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+# Cargar las librerías necesarias
+library(knitr)
+library(readxl)
+library(dplyr)
+
+# Cargar la tabla desde el archivo Excel
+tabla_Parametrico <- read_excel("Resultados VaR/tabla_Parametrico.xlsx")
+
+# Mostrar los primeros registros de forma bonita con kable
+kable(sample_n(tabla_Parametrico, 15), caption = "VaR Paramétrico")
+
+```
 
 
 
@@ -659,6 +693,104 @@ En resumen, este gráfico ilustra cómo el riesgo de cola del portafolio no es h
 
 
 
+El gráfico anterior muestra un mapa de calor del Valor en Riesgo (VaR) correspondiente a la emisora MSFT (Microsoft), representada como P2. En el eje vertical se encuentra el horizonte temporal (expresado en días), mientras que el eje horizontal muestra el nivel de confianza (95%, 97% y 99%). Los valores de VaR están representados mediante una escala de colores, donde los tonos amarillo-verde indican valores bajos de riesgo y los tonos naranja-rojo indican valores más altos.
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+# Elegir la emisora
+emisora_objetivo <- "P2"  # <-- cámbialo por la que quieras
+
+# Filtrar y reestructurar solo esa emisora
+tabla_VaR_1emisora <- tabla_Parametrico %>%
+  filter(Emisora == emisora_objetivo) %>%
+  pivot_longer(cols = starts_with("VaR_"),
+               names_to = "Confianza",
+               values_to = "VaR") %>%
+  mutate(Confianza = gsub("VaR_", "", Confianza))
+
+# Crear el mapa de calor
+ggplot(tabla_VaR_1emisora, aes(x = Confianza, y = factor(Horizonte), fill = VaR)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "green", mid = "yellow", high = "red",
+                       midpoint = median(tabla_VaR_1emisora$VaR)) +
+  labs(title = paste("Mapa de Calor del VaR - Emisora:", emisora_objetivo),
+       x = "Nivel de Confianza", y = "Horizonte") +
+  theme_minimal()
+
+```
+
+
+
+
+Interpretación:
+-Incremento con el horizonte: Se observa un incremento del VaR a medida que el horizonte temporal se alarga. Esto es consistente con la teoría financiera, ya que la incertidumbre y el riesgo aumentan conforme se proyectan retornos a más largo plazo.
+
+-Incremento con el nivel de confianza: A mayores niveles de confianza, también se registran valores de VaR más altos. Esto se debe a que se está considerando un peor escenario en la cola de la distribución de pérdidas posibles.
+
+-Mayor concentración de riesgo: Los valores más altos de VaR (tonos rojos) se concentran en la esquina superior derecha del gráfico, lo que indica que, bajo un horizonte largo (180 días) y un nivel de confianza alto (99%), las pérdidas potenciales son mayores. En contraste, en horizontes cortos y niveles de confianza más bajos, el VaR se mantiene bajo.
+
+
+
+
+## Delta Normal
+
+Aquí se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método Delta Normal. Este enfoque paramétrico asume que los rendimientos financieros siguen una distribución normal y que las pérdidas del portafolio pueden aproximarse linealmente en función de los cambios en los factores de riesgo.
+
+Bajo esta metodología, se calcula el VaR usando la fórmula:
+
+$$
+\text{VaR}_\alpha = z_\alpha \cdot \sigma_P \cdot \sqrt{h}
+$$
+
+donde:
+
+- $z_\alpha$: cuantil de la distribución normal estándar para el nivel de confianza $\alpha$,
+- $\sigma_P$: volatilidad del portafolio,
+- $h$: horizonte temporal (en días).
+
+La volatilidad del portafolio se estima como:
+
+$$
+\sigma_P = \sqrt{w^\top \Sigma w}
+$$
+
+donde $w$ es el vector de pesos del portafolio y $\Sigma$ es la matriz de covarianzas entre los activos.
+
+Para la Pérdida Esperada (ES), se utiliza la fórmula:
+
+$$
+\text{ES}_\alpha = \frac{\sigma_P}{1 - \alpha} \cdot \phi(z_\alpha)
+$$
+
+donde $\phi(z_\alpha)$ es la función de densidad de la normal estándar evaluada en $z_\alpha$.
+
+El cálculo se realiza para cada emisora y considera diferentes horizontes de tiempo: 1, 7, 15, 30, 60, 90 y 180 días. Asimismo, se evalúan tres niveles de confianza: 95%, 97% y 99%.
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para una muestra aleatoria de emisoras.
+
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+
+library(readxl)
+library(dplyr)
+library(knitr)
+
+# Leer archivo de resultados
+tabla_DN <- read_excel("Resultados VaR/tabla_Delta.xlsx")
+
+# Mostrar muestra aleatoria de 15 emisoras
+kable(sample_n(tabla_DN, 15), caption = "VaR Delta Normal (muestra aleatoria de emisoras)")
+
+```
 
 
 
@@ -666,24 +798,159 @@ En resumen, este gráfico ilustra cómo el riesgo de cola del portafolio no es h
 
 
 
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+# Selección del Top 10 emisoras con mayor VaR al 99%
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_DN %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% (Delta Normal)")
+```
+
+
+Los resultados de la metodología Delta Normal muestran valores de riesgo consistentes con una estructura de rendimientos normalmente distribuidos. Sin embargo, este enfoque tiende a subestimar el riesgo en presencia de asimetrías o colas pesadas, lo cual puede observarse en comparación con modelos más flexibles como Cornish-Fisher o simulaciones con distribuciones de colas gruesas.
+
+Emisoras como JPM (P12), CVX (P17) y META (P4) presentan valores elevados de VaR al 99%, lo que indica una mayor sensibilidad a fluctuaciones adversas del mercado en horizontes largos. El portafolio total (PT) también se encuentra entre los valores más altos, confirmando su exposición agregada al riesgo sistémico.
+
+En resumen, aunque el modelo Delta Normal es simple y computacionalmente eficiente, sus supuestos restrictivos pueden limitar su aplicabilidad en mercados altamente volátiles o no normales.
 
 
 
 
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyr)
+
+# Convertir de formato ancho a largo para las columnas de VaR
+tabla_VaR_larga <- tabla_DN %>%
+  pivot_longer(cols = starts_with("VaR_"),
+               names_to = "Nivel_Confianza",
+               values_to = "VaR") %>%
+  mutate(Nivel_Confianza = gsub("VaR_", "", Nivel_Confianza))
+
+# Graficar boxplot
+ggplot(tabla_VaR_larga, aes(x = factor(Nivel_Confianza), y = VaR)) +
+  geom_boxplot(fill = "steelblue", alpha = 0.7) +
+  labs(
+    title = "Distribución del VaR por Nivel de Confianza",
+    x = "Nivel de Confianza",
+    y = "VaR"
+  ) +
+  theme_minimal()
+
+
+```
+
+
+
+El gráfico muestra la distribución del Valor en Riesgo (VaR) estimado mediante el modelo Delta Normal, agrupado por nivel de confianza: 95%, 97% y 99%. Cada caja representa la distribución del VaR calculado para distintas emisoras y horizontes de tiempo bajo cada nivel de confianza.
+
+-Valores negativos de VaR:
+Todos los valores son negativos, lo cual es esperado, ya que el VaR representa una pérdida potencial. Un valor de -3, por ejemplo, implica que en el peor 5% de los casos (si el nivel de confianza es 95%), la pérdida esperada no superará el 3%.
+
+-Mayor magnitud de pérdidas a mayor confianza:
+A medida que el nivel de confianza aumenta (de 95% a 99%), la magnitud negativa del VaR se incrementa. Esto refleja un mayor umbral de protección: cuanto más alto el nivel de confianza, mayor es la pérdida potencial que se anticipa en escenarios extremos.
+
+-Distribución más dispersa en niveles altos:
+En el nivel de confianza del 99%, se observa una mayor dispersión y valores mínimos más extremos (caídas más pronunciadas), lo que es coherente con el hecho de que se capturan los eventos más adversos.
+
+-Valores atípicos (outliers):
+Los puntos individuales por debajo de las cajas representan valores atípicos, que pueden deberse a emisoras con alta volatilidad o ciertos horizontes más riesgosos. Estos son importantes porque indican posibles focos de riesgo elevado.
+
+
+
+## Extensión de Cornish-Fisher
+
+Este método permite ajustar la estimación del Valor en Riesgo (VaR) cuando la distribución de los rendimientos financieros no es perfectamente normal, incorporando la asimetría (skewness) y la curtosis (kurtosis) observadas en los datos empíricos.
+
+La fórmula del VaR ajustado mediante la expansión de Cornish-Fisher es:
+
+$$
+\text{VaR}_\alpha = \left( z_\alpha + \frac{1}{6}(z_\alpha^2 - 1)s + \frac{1}{24}(z_\alpha^3 - 3z_\alpha)k - \frac{1}{36}(2z_\alpha^3 - 5z_\alpha)s^2 \right) \cdot \sigma_P \cdot \sqrt{h}
+$$
+
+donde:
+
+- $z_\alpha$: cuantil de la distribución normal estándar para el nivel de confianza $\alpha$,
+- $s$: asimetría (skewness) de los rendimientos,
+- $k$: exceso de curtosis de los rendimientos,
+- $\sigma_P$: desviación estándar de los rendimientos del portafolio,
+- $h$: horizonte temporal.
+
+Este ajuste permite tener en cuenta distribuciones no normales, como aquellas con colas pesadas o sesgo, y proporciona estimaciones más realistas del riesgo extremo.
+
+A continuación se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para una muestra aleatoria de emisoras.
 
 
 
 
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+library(readxl)
+library(dplyr)
+library(knitr)
+
+# Leer archivo de resultados
+tabla_CF <- read_excel("Resultados VaR/VaR_Cornish.xlsx")
+
+# Mostrar muestra aleatoria de 15 emisoras
+kable(sample_n(tabla_CF, 15), caption = "VaR Cornish-Fisher (muestra aleatoria de emisoras)")
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 
 
 
 
+# Selección del Top 10 emisoras con mayor VaR al 99%
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_CF %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% (Cornish-Fisher)")
+```
 
 
 
+Los resultados del modelo Cornish-Fisher muestran una mayor dispersión en los valores de VaR y ES en comparación con el modelo Delta Normal, reflejando la capacidad de este enfoque para capturar las propiedades reales de la distribución de los rendimientos financieros.
 
+Emisoras como META (P4), C (P20) y AMD (P16) presentan valores elevados de riesgo, lo cual puede atribuirse a una alta curtosis o asimetría en sus rendimientos diarios. El portafolio total (PT) también muestra una posición destacada, aunque ligeramente menor que en la simulación Laplace.
 
+Este modelo mejora la estimación de eventos extremos respecto al Delta Normal, pero sigue siendo una aproximación basada en momentos. Su efectividad depende en gran medida de la estabilidad de los parámetros empíricos y la calidad de los datos.
 
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+# Asegurar que Horizonte sea numérico
+tabla_CF$Horizonte <- as.numeric(tabla_CF$Horizonte)
+
+# Filtrar para quitar la emisora "PT"
+tabla_filtrada <- tabla_CF %>% filter(Emisora != "PT")
+
+# Crear gráfico con valores absolutos del ES_99
+ggplot(tabla_filtrada, aes(x = Horizonte, y = abs(ES_99), color = Emisora)) +
+  geom_line(size = 1) +
+  labs(title = "ES 99% por Emisora en Diferentes Horizontes - Modelo Cornish-Fisher",
+       x = "Horizonte (días)",
+       y = "Valor Absoluto del ES (99%)",
+       color = "Emisora") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "bottom"
+  )
+```
+El gráfico de Pérdida Esperada (ES) al 99% bajo el modelo Cornish-Fisher revela cómo evoluciona el riesgo extremo a través de distintos horizontes temporales para cada emisora. Se observa que, en general, el riesgo tiende a incrementarse con el horizonte de inversión, reflejando la acumulación de incertidumbre a lo largo del tiempo.
+
+Las emisoras con curvas más empinadas indican una mayor sensibilidad a los cambios en el plazo, lo que sugiere una mayor volatilidad o asimetría en su distribución de rendimientos. Por otro lado, algunas emisoras presentan una evolución más estable del ES, lo que refleja una menor exposición a colas extremas bajo este modelo.
+
+Este gráfico permite identificar de forma visual qué activos concentran más riesgo extremo y cómo varía dicha exposición en diferentes escalas temporales. En resumen, el modelo Cornish-Fisher ofrece una estimación más realista y diferenciada del riesgo extremo frente a modelos que asumen normalidad simétrica, siendo especialmente útil para análisis de riesgo a mediano y largo plazo.
 
 
 
@@ -764,7 +1031,7 @@ kable(nueva, caption = "VaR Resumen por promedios")
 
 ```
 
-La tabla presentada compara los resultados obtenidos de distintas metodologías de estimación de Valor en Riesgo (VaR) —incluyendo los enfoques de Alisado Exponencial, Bootstrap, Cornish-Fisher, Delta Normal, Laplace, Monte Carlo, Paramétrico y Simulación Histórica— bajo diferentes horizontes temporales (desde 1 día hasta 960 días). Las métricas reportadas incluyen las estimaciones promedio de VaR al 5% (Prom. VaR05), VaR al 1% (Prom. VaR01) y el Expected Shortfall al 5% (Prom. ES95).
+La tabla presentada compara los resultados obtenidos de distintas metodologías de estimación de Valor en Riesgo (VaR) incluyendo los enfoques de Alisado Exponencial, Bootstrap, Cornish-Fisher, Delta Normal, Laplace, Monte Carlo, Paramétrico y Simulación Histórica— bajo diferentes horizontes temporales . Las métricas reportadas incluyen las estimaciones promedio de VaR al 5% (Prom. VaR05), VaR al 1% (Prom. VaR01) y el Expected Shortfall al 5% (Prom. ES95).
 
 En términos generales, se observa que, a medida que se incrementa el horizonte temporal, los valores absolutos de VaR y ES tienden a incrementarse, lo cual es consistente con la intuición financiera de que el riesgo acumulado crece con el tiempo.
 
@@ -811,11 +1078,12 @@ kable(tabla, caption = "Comparación cualitativa de los modelos de VaR aplicados
 
 
 
-# Conclusiones 
+## Conclusiones 
 
 A lo largo de este proyecto, realizamos un análisis exhaustivo del riesgo de mercado mediante el cálculo del Valor en Riesgo (VaR) y el Expected Shortfall (ES) para un portafolio compuesto por 20 acciones del índice S&P 500, abarcando el periodo de enero de 2022 a marzo de 2025. La selección de las emisoras se fundamentó en nuestros gustos por la tecnologia lo cual no resulto a la perfección ya que son acciones que estan muy relacionadas y no permitió que nuestro portafolio se diversificara.
 
-Aplicamos modelos de VaR tanto no paramétricos (Simulación Histórica, Simulación Monte Carlo con distribuciones Normal y Laplace, Bootstrapping y Alisado Exponencial) como paramétricos (VaR clásico, Delta Normal, Cornish-Fisher y EWMA). Todo el análisis fue desarrollado en el lenguaje R, lo cual nos permitió automatizar procesos, realizar simulaciones masivas y obtener resultados detallados para distintos niveles de confianza y horizontes temporales .
+Aplicamos modelos de VaR tanto no paramétricos (Simulación Histórica, Simulación Monte Carlo con distribuciones Normal y Laplace, Bootstrapping y Alisado Exponencial) como paramétricos (VaR clásico, Delta Normal y Cornish-Fisher). Todo el análisis fue desarrollado en el lenguaje 
+R y python buscando sacar lo mejor da cada lenguaje,lo cual nos permitió automatizar procesos, realizar simulaciones masivas y obtener resultados detallados para distintos niveles de confianza y horizontes temporales .
 
 En conclusión, este trabajo nos permitió aplicar y contrastar diferentes enfoques de medición del riesgo financiero, profundizando en las ventajas y limitaciones de cada uno. Aprendimos que no existe un modelo único aplicable a todos los contextos, y que una buena práctica en la gestión de riesgos consiste en comparar y validar varios enfoques, con el fin de tomar decisiones informadas ante la incertidumbre inherente de los mercados financieros.
 
