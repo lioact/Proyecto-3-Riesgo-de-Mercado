@@ -728,8 +728,6 @@ ggplot(tabla_VaR_1emisora, aes(x = Confianza, y = factor(Horizonte), fill = VaR)
 
 
 
-
-Interpretación:
 -Incremento con el horizonte: Se observa un incremento del VaR a medida que el horizonte temporal se alarga. Esto es consistente con la teoría financiera, ya que la incertidumbre y el riesgo aumentan conforme se proyectan retornos a más largo plazo.
 
 -Incremento con el nivel de confianza: A mayores niveles de confianza, también se registran valores de VaR más altos. Esto se debe a que se está considerando un peor escenario en la cola de la distribución de pérdidas posibles.
@@ -1031,7 +1029,7 @@ kable(nueva, caption = "VaR Resumen por promedios")
 
 ```
 
-La tabla presentada compara los resultados obtenidos de distintas metodologías de estimación de Valor en Riesgo (VaR) incluyendo los enfoques de Alisado Exponencial, Bootstrap, Cornish-Fisher, Delta Normal, Laplace, Monte Carlo, Paramétrico y Simulación Histórica— bajo diferentes horizontes temporales . Las métricas reportadas incluyen las estimaciones promedio de VaR al 5% (Prom. VaR05), VaR al 1% (Prom. VaR01) y el Expected Shortfall al 5% (Prom. ES95).
+La tabla presentada compara los resultados obtenidos de distintas metodologías de estimación de Valor en Riesgo  incluyendo los enfoques de Alisado Exponencial, Bootstrap, Cornish-Fisher, Delta Normal, Laplace, Monte Carlo, Paramétrico y Simulación Histórica— bajo diferentes horizontes temporales . Las métricas reportadas incluyen las estimaciones promedio de VaR al 5% (Prom. VaR05), VaR al 1% (Prom. VaR01) y el Expected Shortfall al 5% (Prom. ES95).
 
 En términos generales, se observa que, a medida que se incrementa el horizonte temporal, los valores absolutos de VaR y ES tienden a incrementarse, lo cual es consistente con la intuición financiera de que el riesgo acumulado crece con el tiempo.
 
@@ -1080,7 +1078,7 @@ kable(tabla, caption = "Comparación cualitativa de los modelos de VaR aplicados
 
 ## Conclusiones 
 
-A lo largo de este proyecto, realizamos un análisis exhaustivo del riesgo de mercado mediante el cálculo del Valor en Riesgo (VaR) y el Expected Shortfall (ES) para un portafolio compuesto por 20 acciones del índice S&P 500, abarcando el periodo de enero de 2022 a marzo de 2025. La selección de las emisoras se fundamentó en nuestros gustos por la tecnologia lo cual no resulto a la perfección ya que son acciones que estan muy relacionadas y no permitió que nuestro portafolio se diversificara.
+A lo largo de este proyecto, realizamos un análisis exhaustivo del riesgo de mercado mediante el cálculo del Valor en Riesgo  y el Expected Shortfall  para un portafolio compuesto por 20 acciones del índice S&P 500, abarcando el periodo de enero de 2022 a marzo de 2025. La selección de las emisoras se fundamentó en nuestros gustos por la tecnologia lo cual no resulto a la perfección ya que son acciones que estan muy relacionadas y no permitió que nuestro portafolio se diversificara.
 
 Aplicamos modelos de VaR tanto no paramétricos (Simulación Histórica, Simulación Monte Carlo con distribuciones Normal y Laplace, Bootstrapping y Alisado Exponencial) como paramétricos (VaR clásico, Delta Normal y Cornish-Fisher). Todo el análisis fue desarrollado en el lenguaje 
 R y python buscando sacar lo mejor da cada lenguaje,lo cual nos permitió automatizar procesos, realizar simulaciones masivas y obtener resultados detallados para distintos niveles de confianza y horizontes temporales .
