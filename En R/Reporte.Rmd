@@ -159,6 +159,7 @@ library(tidyr)
 
 
 
+
 cartera <- c("AAPL","MSFT","NVDA","AMZN","META","GOOGL","AVGO","GOOG","TSLA","WMT","INTC","JPM","F","NKE","GS","NFLX","CVX","ADBE","BAC","C") 
 
 getSymbols(cartera,src = "yahoo",from="2022-01-01", to="2025-03-01")
@@ -170,7 +171,7 @@ colnames(d1) <- cartera
 ```
 
 
-## visualización de datos
+## Visualización de datos
 
 Con el objetivo de visualizar el comportamiento histórico de las emisoras seleccionadas, se elaboró un gráfico de líneas que muestra las series de tiempo de los precios de cierre de cada acción considerada en el análisis. Esta visualización permite identificar tendencias generales, episodios de volatilidad y comportamientos particulares que podrían influir en el cálculo del riesgo.
 
@@ -334,7 +335,7 @@ df_p1_long <- df_p1 %>%
 ggplot(df_p1_long, aes(x = Horizonte, y = VaR, color = Confianza, group = Confianza)) +
   geom_line(size = 1) +
   geom_point(size = 2) +
-  labs(title = "VaR por Simulación Histórica  AAPL",
+  labs(title = "VaR por Simulación Histórica del APPL",
        x = "Horizonte de tiempo",
        y = "Valor en Riesgo (VaR)",
        color = "Nivel de Confianza") +
@@ -354,99 +355,482 @@ Este gráfico muestra cómo varía el Valor en Riesgo (VaR) de la emisora P1 en 
 
 -La forma ascendente del gráfico confirma que el riesgo crece en escenarios más extremos y en plazos más largos.
 
+
+## Simulación de Monte Carlo
+
+En esta sección se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método de Simulación Monte Carlo con supuestos normales, que estima el riesgo de pérdida futura generando un gran número de trayectorias posibles del precio del activo, basadas en la media y volatilidad histórica de los rendimientos diarios, bajo el supuesto de que estos siguen una distribución normal.
+
+Este enfoque permite modelar escenarios futuros aleatorios mediante la generación de números pseudoaleatorios, lo que proporciona una visión probabilística del comportamiento potencial del activo. A diferencia de la simulación histórica, esta técnica asume explícitamente una forma paramétrica (normal) para la distribución de los rendimientos, lo que puede facilitar el análisis pero también implica limitaciones si los rendimientos reales presentan asimetría o colas gruesas.
+
+
+Sea $X = (x_1, x_2, x_3, \dots, x_{n+1})$ el vector de precios del activo durante $n+1$ días.
+
+A partir de estos precios, se calcula el vector de **rendimientos porcentuales** como:
+
+$$
+y_i = \frac{x_{i+1}}{x_i} - 1, \quad \text{para } i = 1, 2, \dots, n
+$$
+
+Suponiendo que los rendimientos siguen una distribución Normal, se estiman los parámetros estadísticos:
+
+- Media muestral: $\hat{\mu}$
+- Desviación estándar: $\hat{\sigma}$
+
+Se simulan $N$ rendimientos futuros a partir de una función de distribución acumulada inversa, generando:
+
+$$
+w_i = F^{-1}(u_i; \mu, \sigma^2), \quad u_i \sim \mathcal{U}(0,1)
+$$
+
+El **Valor en Riesgo (VaR)** se calcula como el percentil inferior de la muestra $W = (w_1, w_2, \dots, w_N)$.
+
+La **Pérdida Esperada (ES)** se obtiene como el promedio de los valores que exceden ese percentil.
+
+
+
+El VaR se calcula como el percentil inferior de la muestra $W = (w_1, w_2, \dots, w_N)$, y la Pérdida Esperada como el promedio de los valores que exceden ese percentil.
+
+
+
+El cálculo se realiza para cada emisora y considera diferentes horizontes de tiempo: 1, 7, 15, 30, 60, 90 y 180 días. Asimismo, se evalúan tres niveles de confianza: 95%, 97% y 99%, permitiendo comparar el riesgo bajo distintos supuestos de severidad.
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamente con cada nivel de confianza (95%, 97%, 99%).
+
+
+
 ```{r, message=FALSE, warning=FALSE,echo = FALSE	}
-# Filtrar por emisora
-df_p1 <- tabla_Hist %>% filter(Emisora == "P1")
 
-# Orden lógico del horizonte
-orden_horizonte <- c("1días", "7días", "15días", "30días", "60días", "90días", "180días")
-df_p1$Horizonte <- factor(df_p1$Horizonte, levels = orden_horizonte, ordered = TRUE)
+tabla_MCN <- read_excel("Resultados VaR/tabla_Montercarlo.xlsx")
+kable(sample_n(tabla_MCN, 15), caption = "VaR MCN")
 
-# Reestructurar los datos de ES
-df_p1_es_long <- df_p1 %>%
-  pivot_longer(cols = starts_with("ES_"), names_to = "Confianza", values_to = "ES")
 
-# Graficar ES con colores diferentes
-ggplot(df_p1_es_long, aes(x = Horizonte, y = ES, color = Confianza, group = Confianza)) +
-  geom_line(size = 1) +
-  geom_point(size = 2) +
-  scale_color_manual(values = c("ES_95" = "#E69F00", "ES_97" = "#56B4E9", "ES_99" = "#009E73")) +
-  labs(title = "Expected Shortfall por Simulación Histórica AAPL",
-       x = "Horizonte de tiempo",
-       y = "Expected Shortfall (ES)",
-       color = "Nivel de Confianza") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold")
-  )
+
 
 ```
-Este gráfico complementa al anterior y muestra el Expected Shortfall (ES) para la misma emisora P1, también en distintos horizontes de tiempo y niveles de confianza.
-
-
-
--El ES es siempre mayor que el VaR, ya que mide el promedio de las pérdidas que superan al VaR. En otras palabras, qué tan graves pueden ser las pérdidas en el peor 1%, 3% o 5% de los casos.
-
--A medida que aumenta el horizonte o el nivel de confianza, el ES también crece significativamente.
-
--Este gráfico muestra que las pérdidas extremas son más severas de lo que el VaR por sí solo indica, lo cual resalta la utilidad del ES como medida complementaria del riesgo.
-
-Los resultados obtenidos muestran cómo el VaR y la ES varían según el horizonte de tiempo y el nivel de confianza. En general, a medida que aumenta el nivel de confianza, tanto el VaR como la ES aumentan, reflejando un mayor riesgo de pérdida en situaciones extremas. Esto es consistente con la naturaleza de estos indicadores, que buscan capturar los eventos de cola de la distribución.
 
 
 
 
-Con el objetivo de identificar las emisoras que presentan mayor exposición al riesgo extremo, se construyó la siguiente tabla que muestra el Top 10 de emisoras con los valores más altos de VaR al 99% en un horizonte de 180 días. Este nivel de confianza refleja escenarios de pérdidas severas, que podrían ocurrir solo en el 1% de los casos más desfavorables según el comportamiento histórico.
 
-La tabla permite identificar rápidamente qué activos individuales representan el mayor riesgo potencial dentro del portafolio en términos de pérdidas extremas. Estos resultados son especialmente útiles para la gestión del riesgo, ya que facilitan decisiones como el ajuste del peso de ciertos activos o la implementación de estrategias de cobertura. En particular, emisoras con alto VaR tienden a ser más volátiles o sensibles a choques de mercado, por lo que requieren un seguimiento más riguroso. condiciones de mercado más extremas.
 ```{r, message=FALSE, warning=FALSE,echo = FALSE	}
-library(dplyr)
-library(knitr)
 
-# Asegúrate de que la columna correcta exista (ajusta si es otra)
-columna_var <- "VaR_99%"
 
-# Filtrar las 10 filas con mayor VaR sin repetir emisora
-top10_var_unico <- tabla_Hist %>%
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_MCN %>%
   arrange(desc(.data[[columna_var]])) %>%
   distinct(Emisora, .keep_all = TRUE) %>%
   slice(1:10)
 
-# Mostrar en tabla con kable
 kable(top10_var_unico, caption = "Top 10 VaR al 99% ")
+```
+
+
+
+Los resultados de la simulación Monte Carlo normal indican que el portafolio total (PT) sigue presentando el mayor Valor en Riesgo (VaR), lo que confirma su exposición a pérdidas extremas en escenarios adversos. Emisoras como WMT (P10), JPM (P12) y CVX (P17) también muestran un VaR elevado, lo que sugiere que, incluso bajo una distribución normal de rendimientos, estas acciones mantienen una alta sensibilidad a fluctuaciones del mercado.
+
+Las emisoras WMT, JPM, CVX tienen un alto VaR individual, asociado a su naturaleza cíclica (WMT en retail, JPM en banca, CVX en energía) y su reactividad a shocks económicos.
+
+En comparación con el VaR histórico, la simulación normal confirma tendencias similares a las observadas en el análisis histórico, aunque con posibles variaciones en la magnitud del riesgo debido a los supuestos de normalidad.
+
+
+
+
+
+
+## Simulación de Monte Carlo Laplace
+
+En esta sección se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método de Simulación Monte Carlo con distribución Laplace. A diferencia de la simulación histórica, este enfoque genera escenarios sintéticos basados en una distribución de probabilidad específica (en este caso, Laplace), que es adecuada para modelar rendimientos financieros con colas más pesadas que la distribución normal, capturando así mejor el riesgo de eventos extremos.
+
+La distribución Laplace (o doble exponencial) se caracteriza por su mayor densidad en las colas, lo que la hace útil para activos con alta curtosis y volatilidad. Su función de densidad de probabilidad está dada por:
+
+$$
+f(x \mid \mu, b) = \frac{1}{2b} \exp\left(-\frac{|x - \mu|}{b}\right)
+$$
+
+donde:
+- $\mu$ es la localización
+- $b > 0$ es el parámetro de escala
+
+El cálculo se realiza para cada emisora y considera diferentes horizontes de tiempo: 1, 7, 15, 30, 60, 90 y 180 días. Asimismo, se evalúan tres niveles de confianza: 95%, 97% y 99%, permitiendo comparar el riesgo bajo distintos supuestos de severidad.
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamente con cada nivel de confianza (95%, 97%, 99%).
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+tabla_MCL <- read_excel("Resultados VaR/tabla_Laplace.xlsx")
+kable(sample_n(tabla_MCL, 15), caption = "VaR MCL")
+
+
+```
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_MCL %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% ")
+
+```
+
+
+Los resultados de la simulación Monte Carlo bajo el supuesto de distribución Laplace revelan patrones de riesgo significativos en el portafolio analizado. Este enfoque, que considera colas más pesadas que la distribución normal, proporciona una estimación más conservadora del riesgo extremo. 
+
+Las emisoras con mayor riesgo fueron BAC (P19), INTC (P11) y ADBE (P18), la esta sensibilidad de BAC (P19) refleja la naturaleza cíclica del sector bancario (Bank of America) a cambios en tasas de interés y condiciones macroeconómicas, en INTC (P11) la volatilidad en semiconductores y competencia global impactan su perfil de riesgo y en ADBE (P18) muestra sensibilidad a cambios en gasto corporativo.
+
+En comparacion con los otros modelos la simulación Laplace muestra valores de riesgo más extremos que la normal para las mismas condiciones, tiene mayor dispersión en los resultados entre emisoras y ES significativamente más alto que en simulaciones normales
+
+
+
+
+## Simulación Bootstrapping
+
+En esta sección se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método de simulación Bootstrap. A diferencia de los enfoques paramétricos tradicionales, esta técnica no asume una distribución específica para los rendimientos financieros, sino que se basa en el remuestreo aleatorio de los datos históricos para generar escenarios sintéticos. Esto permite capturar de manera más fiel las características empíricas de los datos, incluyendo asimetrías, curtosis y dependencia temporal, proporcionando así estimaciones de riesgo más robustas, especialmente en mercados con comportamiento no normal.
+
+Para el remuestreo con reemplazo, dada una serie histórica de rendimientos $r_1, r_2, \dots, r_n$, generamos $B$ muestras bootstrap:
+
+$$
+r_1, r_2, \dots, r_n \quad \text{(donde cada } r_i \text{ se selecciona aleatoriamente)}
+$$
+
+
+Para cada muestra bootstrap, calculamos el percentil $\alpha$:
+
+   $$
+   \text{VaR}\alpha = \frac{1}{B}\sum{b=1}^B \text{percentil}_\alpha(r^*_b)
+   $$
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+tabla_B <- read_excel("Resultados VaR/tabla_bootstrap.xlsx")
+kable(sample_n(tabla_B, 15), caption = "VaR Bootstrapping")
 
 
 ```
 
 
-Los resultados de la tabla muestran que el portafolio total (PT) presenta el mayor VaR, seguido por emisoras como TSLA (P9), NVDA (P3) y NFLX (P16), que son conocidas por su alta volatilidad y sensibilidad a cambios en el mercado. Estos valores reflejan que dichas acciones son las más expuestas a pérdidas extremas bajo condiciones similares a las históricas.
 
-En contraste, emisoras como INTC (P11) o F (P13), aunque también aparecen en el top 10, presentan un nivel de riesgo algo menor, posiblemente por una menor volatilidad o menor correlación con shocks de mercado globales.
-
-Esto resalta la importancia de considerar no solo el rendimiento esperado, sino también el perfil de riesgo extremo de cada activo al construir y gestionar un portafolio diversificado.
-
-## Simulación de Monte Carlo
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
 
 
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_B %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% ")
+```
 
 
+Los resultados de la simulación revelan un riesgo controlado en el corto plazo para el portafolio total (PT), con pérdidas máximas esperadas (VaR95) del 0.93% y pérdidas extremas (ES99) mínimas (-0.039%), lo que indica una estructura diversificada y resiliente ante eventos adversos intradía. Sin embargo, se identificaron tres emisoras críticas que requieren atención prioritaria
 
+Las emisoras ADBE (P18), NKE(P14), y C(P20) presentan los valores más negativos de VaR al 99%, lo cual indica un mayor riesgo potencial de pérdida extrema bajo las condiciones simuladas. 
 
-
-
-
-
-
-
-
-
-
+Emisoras como WMT (P10) muestran VaR y ES mucho menos negativos, lo que indica una menor exposición al riesgo extremo bajo este modelo.
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+## Alisamiento exponencial
+
+
+
+En este proyecto se aplicó el modelo de Alisado Exponencial para estimar el riesgo del portafolio a partir de los rendimientos simples diarios. Este enfoque permitió capturar la volatilidad reciente del mercado, asignando más peso a los movimientos actuales y menos a los eventos pasados.
+
+El modelo se basó en una actualización diaria de la volatilidad, donde el peso de cada observación disminuyó de forma exponencial en el tiempo. Es decir, los rendimientos más recientes tuvieron mayor influencia sobre la estimación del riesgo.
+
+El cálculo de la volatilidad suavizada se realizó con la siguiente fórmula recursiva:
+
+$$
+\sigma_t^2 = \lambda \cdot \sigma_{t-1}^2 + (1 - \lambda) \cdot r_{t-1}^2
+$$
+
+donde:
+
+- $\sigma_t^2$ es la volatilidad estimada para el día $t$,
+- $r_{t-1}$ es el rendimiento simple del portafolio en el día anterior,
+- $\lambda$ es el parámetro de alisado, con $0 < \lambda < 1$.
+
+Una vez obtenida la volatilidad suavizada, se calculó el *Valor en Riesgo (VaR)* del portafolio bajo el supuesto de normalidad de los rendimientos:
+
+$$
+\text{VaR}_{\alpha,t} = z_\alpha \cdot \sigma_t
+$$
+
+donde $z_\alpha$ representa el cuantil de la distribución normal estándar asociado al nivel de confianza deseado (por ejemplo, $z_{0.95} = 1.645$).
+
+Además, se estimó el *Expected Shortfall (ES)*, que representa la pérdida esperada en caso de que el VaR sea superado:
+
+$$
+\text{ES}_{\alpha,t} = \sigma_t \cdot \frac{\phi(z_\alpha)}{1 - \alpha}
+$$
+
+donde $\phi(z_\alpha)$ es la función de densidad de la normal estándar evaluada en $z_\alpha$.
+
+En resumen, el modelo EWMA aplicado sobre los rendimientos simples del portafolio permitió estimar un VaR dinámico y adaptado a las condiciones recientes del mercado. Aunque suponer una distribución normal implica ciertas limitaciones, la flexibilidad del alisado exponencial ofreció una herramienta útil para evaluar el riesgo financiero de forma más sensible a los cambios del entorno.
+
+
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamnete con cada nivel de confianza (95%, 97%, 99%).
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+# Cargar las librerías necesarias
+library(knitr)
+library(readxl)
+library(dplyr)
+
+# Cargar la tabla desde el archivo Excel
+tabla_Alisado <- read_excel("Resultados VaR/tabla_Alisado.xlsx")
+
+# Mostrar los primeros registros de forma bonita con kable
+kable(sample_n(tabla_Alisado, 15), caption = "VaR Historico")
+
+
+```
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+
+# Asegurar que Horizonte sea numérico
+tabla_Alisado$Horizonte <- as.numeric(tabla_Alisado$Horizonte)
+
+# Filtrar para quitar la emisora "PT"
+tabla_filtrada <- tabla_Alisado %>% filter(Emisora != "PT")
+
+# Crear gráfico con valores absolutos del ES_99
+ggplot(tabla_filtrada, aes(x = Horizonte, y = abs(ES_99), color = Emisora)) +
+  geom_line(size = 1) +
+  labs(title = "ES 99% por Emisora en Diferentes Horizontes",
+       x = "Horizonte (días)",
+       y = "Valor Absoluto del ES (99%)",
+       color = "Emisora") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+El gráfico anterior muestra cómo varía el ES al 99% para cada emisora del portafolio en función del horizonte de tiempo considerado (1 a 180 días). Esta métrica refleja la pérdida esperada en los peores escenarios, es decir, en el 1% de las ocasiones en que las pérdidas superan el Valor en Riesgo (VaR).
+
+Podemos observar que, en general, el valor absoluto del ES tiende a incrementarse conforme el horizonte de tiempo se amplía. Esto es consistente con la teoría financiera, ya que una mayor exposición temporal usualmente implica mayor riesgo acumulado, tambien cabe recalcar que se excluyo al portafolio del grafico.
+
+Además, se identifican diferencias notables entre emisoras: algunas presentan curvas más empinadas, lo que indica una mayor sensibilidad al paso del tiempo en sus riesgos extremos. Esto podría deberse a una mayor volatilidad reciente, que el modelo de alisado exponencial captura otorgando más peso a los rendimientos recientes.
+
+La exclusión de la emisora "PT" permitió una mejor visualización del comportamiento de las demás acciones, ya que sus valores extremos distorsionaban la escala del gráfico. Esta decisión facilita la comparación relativa entre emisoras y permite identificar con mayor claridad cuáles contribuyen en mayor medida al riesgo extremo del portafolio.
+
+En resumen, este gráfico ilustra cómo el riesgo de cola del portafolio no es homogéneo entre emisoras ni constante en el tiempo, lo que resalta la importancia de considerar tanto el horizonte como la composición del portafolio en la gestión de riesgos.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Comparación de modelos
+
+Generamoos una tabla con todos los datos de los modelos de VaR y ES obtenidos en las secciones anteriores. Esta tabla incluye los resultados de los métodos de Alisado Exponencial, Bootstrap, Cornish-Fisher, Delta Normal, Laplace, Monte Carlo, Paramétrico y Simulación Histórica. La tabla se presenta solo con 15 datos seleccionados aleatoriamente para facilitar la visualización, pero se puede ampliar a todos los datos si es necesario.
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE}
+# Cargar las librerías necesarias
+
+
+# Cargar las tablas desde los archivos Excel
+tabla_Alisado <- read_excel("Resultados VaR/tabla_Alisado.xlsx")
+tabla_bootstrap <- read_excel("Resultados VaR/tabla_bootstrap.xlsx")
+tabla_Delta <- read_excel("Resultados VaR/tabla_Delta.xlsx")
+tabla_Hist <- read_excel("Resultados VaR/tabla_Hist.xlsx")
+tabla_Laplace <- read_excel("Resultados VaR/tabla_Laplace.xlsx")
+tabla_Montercarlo <- read_excel("Resultados VaR/tabla_Montercarlo.xlsx")
+tabla_Parametrico <- read_excel("Resultados VaR/tabla_Parametrico.xlsx")
+VaR_Cornish <- read_excel("Resultados VaR/VaR_Cornish.xlsx")
+
+
+estandarizar_tabla <- function(tabla, nombre_modelo) {
+  
+  # Asegurarse de que Horizonte sea character
+  tabla <- tabla %>% mutate(Horizonte = as.character(Horizonte))
+  
+  # Si tiene NumSim, filtrar solo si == 20000
+  if ("NumSim" %in% colnames(tabla)) {
+    tabla <- tabla %>% filter(NumSim == 20000)
+  } else {
+    tabla$NumSim <- NA  # agregar columna para unificación posterior
+  }
+  
+  # Agregar columna Modelo
+  tabla <- tabla %>%
+    mutate(Modelo = nombre_modelo) %>%
+    select(Emisora, Horizonte, VaR_95, VaR_97, VaR_99,
+           ES_95, ES_97, ES_99, NumSim, Modelo)
+  
+  return(tabla)
+}
+
+tabla_Alisado      <- estandarizar_tabla(tabla_Alisado, "Alisado Exponencial")
+tabla_bootstrap    <- estandarizar_tabla(tabla_bootstrap, "Bootstrap")
+tabla_Laplace      <- estandarizar_tabla(tabla_Laplace, "Laplace")
+tabla_Montercarlo  <- estandarizar_tabla(tabla_Montercarlo, "MonteCarlo")
+tabla_Parametrico  <- estandarizar_tabla(tabla_Parametrico, "Paramétrico")
+VaR_Cornish        <- estandarizar_tabla(VaR_Cornish, "Cornish-Fisher")
+tabla_Delta        <- estandarizar_tabla(tabla_Delta, "Delta Normal")
+tabla_Hist         <- estandarizar_tabla(tabla_Hist, "Simulación Histórica")
+
+tabla_comparativa <- bind_rows(
+  tabla_Alisado, tabla_bootstrap, tabla_Delta, tabla_Hist, 
+  tabla_Laplace, tabla_Montercarlo, tabla_Parametrico, VaR_Cornish
+)
+
+tabla_comparativa$NumSim <- NULL
+
+kable(sample_n(tabla_comparativa, 15), caption = "Resumen de modelos con muestra aleatoria")
+```
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE}
+nueva <- tabla_comparativa %>%
+  group_by(Modelo, Horizonte) %>%
+  summarise(
+    Prom_VaR95 = mean(VaR_95, na.rm = TRUE),
+    Prom_VaR99 = mean(VaR_99, na.rm = TRUE),
+    Prom_ES95  = mean(ES_95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+kable(nueva, caption = "VaR Resumen por promedios")
+
+```
+
+La tabla presentada compara los resultados obtenidos de distintas metodologías de estimación de Valor en Riesgo (VaR) —incluyendo los enfoques de Alisado Exponencial, Bootstrap, Cornish-Fisher, Delta Normal, Laplace, Monte Carlo, Paramétrico y Simulación Histórica— bajo diferentes horizontes temporales (desde 1 día hasta 960 días). Las métricas reportadas incluyen las estimaciones promedio de VaR al 5% (Prom. VaR05), VaR al 1% (Prom. VaR01) y el Expected Shortfall al 5% (Prom. ES95).
+
+En términos generales, se observa que, a medida que se incrementa el horizonte temporal, los valores absolutos de VaR y ES tienden a incrementarse, lo cual es consistente con la intuición financiera de que el riesgo acumulado crece con el tiempo.
+
+Por ejemplo, en el caso del modelo Delta Normal, el VaR al 5% pasa de -0.0456 en un horizonte de 1 día a -0.5286 en 90 días, mientras que el Expected Shortfall también aumenta en magnitud. Este comportamiento también se repite en modelos como la Simulación Histórica, donde se observa un VaR05 promedio de 0.1341 en un horizonte de 60 días, aumentando a 0.7352 en un horizonte de 960 días.
+
+Los modelos basados en Simulación Histórica y Monte Carlo presentan valores positivos en algunos casos, lo cual puede deberse al uso de series históricas o escenarios simulados en los que los rendimientos promedio fueron positivos. Esto puede implicar una sobreestimación del rendimiento esperado o un sesgo en los datos utilizados.
+
+Por otro lado, los modelos paramétricos como el Delta Normal y Laplace tienden a presentar estimaciones más conservadoras (valores más negativos de VaR y ES), especialmente en horizontes largos, lo cual refleja la sensibilidad de estos métodos a los supuestos de distribución de retornos.
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE}
+
+tabla <- data.frame(
+  Modelo = c("Alisado Exponencial", "Bootstrap", "Cornish-Fisher", "Delta Normal", 
+             "Laplace", "Monte Carlo", "Paramétrico", "Simulación Histórica"),
+  Enfoque = c("Ponderación exponencial", "Remuestreo", "Expansión de Edgeworth", 
+              "Distribución Normal", "Distribución Laplace", "Simulación estocástica", 
+              "Supuestos estáticos", "Datos reales pasados"),
+  Comportamiento = c("VaR y ES muy negativos, especialmente en horizontes largos",
+                     "Valores moderados; depende del tamaño muestral",
+                     "VaR menos extremos que otros modelos paramétricos",
+                     "No capta colas pesadas; subestima extremos",
+                     "VaR y ES muy negativos; colas pesadas",
+                     "VaR positivo en varios horizontes",
+                     "Resultados muy variables; algunos positivos",
+                     "VaR y ES positivos en horizontes largos"),
+  Riesgo = c("Sobreestima el riesgo", 
+             "Neutral", 
+             "Subestima el riesgo", 
+             "Subestima el riesgo", 
+             "Sobreestima el riesgo", 
+             "Subestima fuertemente el riesgo", 
+             "Subestima o inconsistente", 
+             "Subestima el riesgo")
+)
+
+kable(tabla, caption = "Comparación cualitativa de los modelos de VaR aplicados")
+
+```
+
+
+
+
+
+
+
+
+# Conclusiones 
+
+A lo largo de este proyecto, realizamos un análisis exhaustivo del riesgo de mercado mediante el cálculo del Valor en Riesgo (VaR) y el Expected Shortfall (ES) para un portafolio compuesto por 20 acciones del índice S&P 500, abarcando el periodo de enero de 2022 a marzo de 2025. La selección de las emisoras se fundamentó en nuestros gustos por la tecnologia lo cual no resulto a la perfección ya que son acciones que estan muy relacionadas y no permitió que nuestro portafolio se diversificara.
+
+Aplicamos modelos de VaR tanto no paramétricos (Simulación Histórica, Simulación Monte Carlo con distribuciones Normal y Laplace, Bootstrapping y Alisado Exponencial) como paramétricos (VaR clásico, Delta Normal, Cornish-Fisher y EWMA). Todo el análisis fue desarrollado en el lenguaje R, lo cual nos permitió automatizar procesos, realizar simulaciones masivas y obtener resultados detallados para distintos niveles de confianza y horizontes temporales .
+
+En conclusión, este trabajo nos permitió aplicar y contrastar diferentes enfoques de medición del riesgo financiero, profundizando en las ventajas y limitaciones de cada uno. Aprendimos que no existe un modelo único aplicable a todos los contextos, y que una buena práctica en la gestión de riesgos consiste en comparar y validar varios enfoques, con el fin de tomar decisiones informadas ante la incertidumbre inherente de los mercados financieros.
+
+
+
+
+
+## Aprendizajes
+
+-Comparación entre metodologías:
+Observamos que los modelos no paramétricos ofrecen mayor flexibilidad, ya que no requieren supuestos de normalidad, aunque dependen fuertemente de la calidad de los datos históricos. Por otro lado, los modelos paramétricos fueron más sencillos computacionalmente, pero en varias ocasiones tendieron a subestimar el riesgo, especialmente en presencia de distribuciones de retornos con colas pesadas.
+
+-Importancia del horizonte y nivel de confianza:
+Confirmamos que, como es de esperarse, tanto el VaR como el ES aumentan con horizontes temporales más largos y con niveles de confianza más elevados, reflejando un mayor riesgo acumulado.
+
+-Elección del modelo y sus implicaciones:
+Identificamos que la selección del modelo de VaR tiene un impacto directo en la gestión del riesgo. Modelos que sobreestiman el riesgo, como el de Alisado Exponencial o Laplace, pueden inducir decisiones conservadoras, mientras que otros, como Delta Normal o Monte Carlo mal calibrado, pueden subestimar el riesgo, generando una falsa sensación de seguridad.
+
+-Desafíos con la simulación Monte Carlo:
+Aunque es una técnica robusta en teoría, su eficacia depende de una buena especificación de parámetros. En algunos casos, los resultados obtenidos fueron inconsistentes (por ejemplo, VaR positivo), lo que resaltó la necesidad de validar cuidadosamente cada modelo.
+
+-Relevancia del Expected Shortfall (ES):
+Incorporar el ES fue fundamental para complementar el análisis, ya que permite evaluar la magnitud de las pérdidas más allá del umbral de VaR. Esto fue especialmente útil con modelos que consideran colas pesadas, proporcionando una medición más completa del riesgo extremo.
 
 
 
