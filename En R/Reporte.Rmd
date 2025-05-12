@@ -1,0 +1,1111 @@
+---
+title: "Valor en Riesgo y ES para portafolio del S&P 500"
+subtitle: "Proyecto de Análisis de Riesgo Financiero"
+author: |
+  Fernanda Hernández,
+  Leonardo Rosas,
+  José Cortes,
+  Lizeth Pastrana 
+date: "Profesor: Jorge Luis Reyes García"
+output:
+  pdf_document:
+    toc: true
+  html_document:
+    toc: true
+    number_sections: true
+---
+
+
+## Abstract
+An investment portfolio was constructed consisting of 20 stocks from companies belonging to the S&P 500 index, selected according to criteria of sector diversification and economic relevance, for the period from January 2022 to March 2025. Historical price data were obtained from the financial platform Yahoo Finance. For each selected issuer, a description of its economic sector, its main operating activities, and a justification for its inclusion in the portfolio are provided, considering its market representativeness and relevance within the risk analysis.
+
+
+#  Introducción
+
+En el ámbito financiero, la gestión de riesgos constituye una de las actividades más importantes para la toma de decisiones estratégicas. Una de las herramientas más utilizadas para cuantificar el riesgo de mercado es el Valor en Riesgo (VaR, por sus siglas en inglés), el cual mide la pérdida máxima esperada de un portafolio financiero en un horizonte temporal dado, bajo un nivel de confianza específico. Complementariamente, se utiliza el Expected Shortfall (ES), también conocido como pérdida esperada, que estima la pérdida promedio en los escenarios en los que el VaR es superado, todo esto usando los lenguajes de programación mas populares dentro del area; R y Python.
+
+El objetivo principal es identificar cuáles emisoras presentan mayor exposición al riesgo bajo diferentes escenarios, y analizar el comportamiento del riesgo agregado del portafolio completo. Esta información permite inferir decisiones clave para estrategias de cobertura, asignación de activos y control de riesgos.
+
+# Selección de Activos
+
+## Descripición de Activos
+Se construyó un portafolio de inversión compuesto por 20 acciones de compañías pertenecientes al índice S&P 500, seleccionadas de acuerdo con criterios de diversificación sectorial y relevancia económica, para el período comprendido entre enero de 2022 y marzo de 2025. Los datos históricos de precios fueron obtenidos de la plataforma financiera Yahoo Finance. Para cada emisora seleccionada, se proporciona una descripción del sector económico al que pertenece, sus principales actividades operativas, y una justificación del por qué se decidió incluirla en el portafolio, considerando su representatividad en el mercado y su relevancia dentro del análisis de riesgo.
+
+
+
+**Apple Inc. (AAPL)**
+Sector: Tecnología 
+Principales actividades: diseña, fabrica y comercializa smartphones, ordenadores personales, tabletas, wearables y accesorios en todo el mundo. 
+Racional: Apple es una de las compañías más valiosas y reconocidas globalmente, líder en innovación tecnológica. Su inclusión aporta solidez y exposición a tendencias de consumo premium, innovación y transformación digital.
+Justificación: Apple es una de las compañías más valiosas y reconocidas globalmente, líder en innovación tecnológica. Su inclusión aporta solidez y exposición a tendencias de consumo premium, innovación y transformación digital.
+
+**Microsoft Corp. (MSFT)**
+Sector: Tecnología 
+Principales actividades: desarrolla y da soporte a software, servicios, dispositivos y soluciones en todo el mundo.
+Racional: Microsoft ofrece estabilidad y crecimiento en sectores clave como software empresarial, computación en la nube e inteligencia artificial, siendo una de las empresas tecnológicas más diversificadas y rentables del mundo.
+Justificación: Microsoft ofrece estabilidad y crecimiento en sectores clave como software empresarial, computación en la nube e inteligencia artificial, siendo una de las empresas tecnológicas más diversificadas y rentables del mundo.
+
+**NVIDIA Corp. (NVDA)**
+Sector: Tecnología 
+Principales actividades: NVIDIA Corporation, empresa de infraestructura informática, ofrece soluciones gráficas, de computación y de redes en Estados Unidos, Singapur, Taiwán, China, Hong Kong y a nivel internacional. El segmento de Computación y Redes comprende plataformas informáticas para centros de datos y plataformas de redes de extremo a extremo.
+Racional: NVIDIA lidera sectores estratégicos como inteligencia artificial, centros de datos y gráficos, posicionándola como un actor fundamental en el futuro de la computación, lo que diversifica riesgos tecnológicos y de crecimiento.
+Justificación: NVIDIA lidera sectores estratégicos como inteligencia artificial, centros de datos y gráficos, posicionándola como un actor fundamental en el futuro de la computación, lo que diversifica riesgos tecnológicos y de crecimiento.
+
+**Amazon.com, Inc. (AMZN)**
+Sector: Consumo discrecional
+Principales actividades: se dedica a la venta minorista de productos de consumo, publicidad y servicios de suscripción a través de tiendas físicas y en línea en Norteamérica e internacionalmente. 
+Racional: Amazon domina el comercio electrónico y los servicios en la nube (AWS), sectores en constante expansión, lo que aporta exposición a innovación digital y consumo global al portafolio.
+Justificación: Amazon domina el comercio electrónico y los servicios en la nube (AWS), sectores en constante expansión, lo que aporta exposición a innovación digital y consumo global al portafolio.
+
+**Meta Platforms, Inc. (META)**
+Sector: Servicios de comunicación
+Principales actividades: se dedica al desarrollo de productos que permiten a las personas conectarse y compartir con amigos y familiares a través de dispositivos móviles, computadoras personales, gafas de realidad virtual y mixta, realidad aumentada y wearables en todo el mundo. 
+Racional: Meta es un referente en redes sociales y está invirtiendo fuertemente en tecnologías emergentes como realidad aumentada y metaverso, ofreciendo una mezcla de innovación y liderazgo en comunicación digital.
+Justificación: Meta es un referente en redes sociales y está invirtiendo fuertemente en tecnologías emergentes como realidad aumentada y metaverso, ofreciendo una mezcla de innovación y liderazgo en comunicación digital.
+
+**Alphabet Inc. A (GOOGL)**
+Sector: Servicios de comunicación
+Principales actividades: Ofrece diversos productos y plataformas en Estados Unidos, Europa, Oriente Medio, África, Asia-Pacífico, Canadá y Latinoamérica. Opera a través de los segmentos de Servicios de Google, Google Cloud y Otras Apuestas. 
+Racional: Alphabet, a través de Google y sus filiales, controla gran parte del mercado de búsquedas y publicidad digital, además de innovar en sectores como la nube, inteligencia artificial y automóviles autónomos, lo que garantiza diversificación tecnológica.
+Justificación: Alphabet, a través de Google y sus filiales, controla gran parte del mercado de búsquedas y publicidad digital, además de innovar en sectores como la nube, inteligencia artificial y automóviles autónomos, lo que garantiza diversificación tecnológica.
+
+**Broadcom Inc. (AVGO)**
+Sector: Tecnología 
+Principales actividades: diseña, desarrolla y suministra diversos dispositivos semiconductores, centrándose en dispositivos complejos basados en semiconductores de óxido metálico complementario (MEC) de señal digital y mixta, así como en productos analógicos III-V a nivel mundial. 
+Racional: Broadcom es clave en la industria de semiconductores y comunicaciones, abasteciendo sectores esenciales como 5G, infraestructura de redes y servidores, brindando exposición a tecnología avanzada y crecimiento estructural.
+Justificación: Broadcom es clave en la industria de semiconductores y comunicaciones, abasteciendo sectores esenciales como 5G, infraestructura de redes y servidores, brindando exposición a tecnología avanzada y crecimiento estructural.
+
+**Alphabet Inc. C (GOOG)**
+Sector: Servicios de comunicación
+Principales actividades: ofrece diversos productos y plataformas en Estados Unidos, Europa, Oriente Medio, África, Asia-Pacífico, Canadá y Latinoamérica. Opera a través de los segmentos de Servicios de Google, Google Cloud y Otras Apuestas.
+Racional: La acción clase C de Alphabet proporciona la misma exposición a innovación, publicidad y tecnología global que GOOGL, pero sin derechos de voto, lo que permite diversificar dentro de una misma estructura corporativa.
+Justificación: La acción clase C de Alphabet proporciona la misma exposición a innovación, publicidad y tecnología global que GOOGL, pero sin derechos de voto, lo que permite diversificar dentro de una misma estructura corporativa.
+
+**Tesla, Inc. (TSLA)**
+Sector: Consumo discrecional
+Principales actividades: Tesla, Inc. diseña, desarrolla, fabrica, alquila y vende vehículos eléctricos y sistemas de generación y almacenamiento de energía en Estados Unidos, China y a nivel internacional.
+Racional: Tesla es líder mundial en movilidad eléctrica y energías renovables, sectores en expansión, aportando innovación y crecimiento disruptivo a largo plazo al portafolio.
+Justificación: Tesla es líder mundial en movilidad eléctrica y energías renovables, sectores en expansión, aportando innovación y crecimiento disruptivo a largo plazo al portafolio.
+
+**WALMART INC.(WMT)**
+Sector: Distribución y venta minorista de alimentos
+Principales actividades: opera tiendas y clubes minoristas y mayoristas, sitios web de comercio electrónico y aplicaciones móviles en todo el mundo.
+Racional: Walmart es el minorista más grande del mundo, con una sólida red logística y crecimiento en comercio electrónico, ofreciendo estabilidad y defensa ante ciclos económicos adversos.
+Justificación: Walmart es el minorista más grande del mundo, con una sólida red logística y crecimiento en comercio electrónico, ofreciendo estabilidad y defensa ante ciclos económicos adversos.
+
+**Intel Corporation (INTC)**
+Sector: Tecnología
+Principales actividades: Intel Corporation diseña, desarrolla, fabrica, comercializa y vende productos y servicios informáticos y relacionados en todo el mundo. 
+Racional: Intel es una referencia en la fabricación de semiconductores y procesadores a nivel mundial. Su reestructuración reciente y apuesta por la manufactura avanzada ofrecen oportunidades de crecimiento estratégico.
+Justificación: Intel es una referencia en la fabricación de semiconductores y procesadores a nivel mundial. Su reestructuración reciente y apuesta por la manufactura avanzada ofrecen oportunidades de crecimiento estratégico.
+
+**JPMorgan Chase & Co. (JPM)**
+Sector: Servicios financieros
+Principales actividades: opera como una compañía de servicios financieros a nivel mundial. Opera a través de tres segmentos: Banca de Consumo y Banca Comunitaria, Banca Comercial y de Inversión, y Gestión de Activos y Patrimonio. La compañía ofrece productos de depósito, inversión y préstamo, gestión de efectivo, pagos y servicios. 
+Racional: JPMorgan, el banco más grande de EE.UU., combina solidez financiera, diversificación de ingresos y liderazgo en banca de inversión y gestión de activos, aportando estabilidad al portafolio.
+Justificación: JPMorgan, el banco más grande de EE.UU., combina solidez financiera, diversificación de ingresos y liderazgo en banca de inversión y gestión de activos, aportando estabilidad al portafolio.
+
+**Ford Motor Company (F)**
+Sector: Consumo discrecional
+Principales actividades: desarrolla, entrega y presta servicio a camionetas, vehículos utilitarios deportivos (SUV), furgonetas y automóviles comerciales Ford, y vehículos de lujo Lincoln en todo el mundo.  
+Racional: Ford representa la transición de la industria automotriz hacia vehículos eléctricos y tecnologías inteligentes, ofreciendo exposición a movilidad sostenible y recuperación cíclica.
+Justificación: Ford representa la transición de la industria automotriz hacia vehículos eléctricos y tecnologías inteligentes, ofreciendo exposición a movilidad sostenible y recuperación cíclica.
+
+**NIKE, Inc. (NKE)**
+Sector: Consumo discrecional
+Principales actividades: junto con sus subsidiarias, se dedica al diseño, desarrollo, comercialización y venta de calzado, ropa, equipos, accesorios y servicios deportivos en todo el mundo.  
+Racional: Nike es líder mundial en ropa y calzado deportivo, con fuerte reconocimiento de marca e innovación continua, lo que brinda exposición al consumo global y a tendencias de vida saludable.
+Justificación: Nike es líder mundial en ropa y calzado deportivo, con fuerte reconocimiento de marca e innovación continua, lo que brinda exposición al consumo global y a tendencias de vida saludable.
+
+**The Goldman Sachs Group, Inc. (GS)**
+Sector: Servicios financieros
+Principales actividades: ofrece una gama de servicios financieros a empresas, instituciones financieras, gobiernos y particulares en América, Europa, Oriente Medio, África y Asia. Opera a través de los segmentos de Banca y Mercados Globales, Gestión de Activos y Patrimonios, y Soluciones de Plataforma. 
+Racional: Goldman Sachs es uno de los bancos de inversión más importantes del mundo, con alto nivel de diversificación y generación de ingresos en servicios financieros, ideal para capturar oportunidades en mercados de capitales.
+Justificación: Goldman Sachs es uno de los bancos de inversión más importantes del mundo, con alto nivel de diversificación y generación de ingresos en servicios financieros, ideal para capturar oportunidades en mercados de capitales.
+
+**Netflix, Inc. (NFLX)**
+Sector: Servicios de Comunicación
+Principales actividades: ofrece servicios de entretenimiento. La compañía ofrece series de televisión, documentales, largometrajes y juegos en diversos géneros e idiomas. También ofrece a sus miembros la posibilidad de recibir contenido en streaming a través de una amplia gama de dispositivos conectados a internet, como televisores, reproductores de vídeo digitales, decodificadores y dispositivos móviles. 
+Racional: Netflix es pionero en el streaming de contenido digital, con expansión global y fuerte creación de contenido original, ofreciendo exposición a cambios en el consumo de entretenimiento.
+Justificación: Netflix es pionero en el streaming de contenido digital, con expansión global y fuerte creación de contenido original, ofreciendo exposición a cambios en el consumo de entretenimiento.
+
+**Chevron Corporation (CVX)**
+Sector: Energético
+Principales actividades: a través de sus filiales, participa en operaciones integradas de energía y productos químicos en Estados Unidos e internacionalmente.  
+Racional: Chevron proporciona diversificación energética con operaciones integradas en petróleo, gas y químicos, y además ofrece estabilidad de dividendos, ideal en entornos de inflación o volatilidad energética.
+Justificación: Chevron proporciona diversificación energética con operaciones integradas en petróleo, gas y químicos, y además ofrece estabilidad de dividendos, ideal en entornos de inflación o volatilidad energética.
+
+**Adobe Inc. (ADBE)**
+Sector: Tecnología 
+Principales actividades: junto con sus filiales, opera como una empresa tecnológica a nivel mundial. Opera a través de tres segmentos: Medios Digitales, Experiencia Digital y Publicidad y Publicidad. 
+Racional: Adobe es líder mundial en software creativo y marketing digital, posicionada en sectores en crecimiento como creación de contenido digital, analítica y experiencia de usuario.
+Justificación: Adobe es líder mundial en software creativo y marketing digital, posicionada en sectores en crecimiento como creación de contenido digital, analítica y experiencia de usuario.
+
+**Bank of America Corporation (BAC)**
+Sector: Servicios financieros
+Principales actividades: a través de sus subsidiarias, ofrece diversos productos y servicios financieros a particulares, pymes, inversores institucionales, grandes corporaciones y gobiernos de todo el mundo.  
+Racional: Bank of America es una de las principales instituciones financieras globales, con diversificación en banca minorista, inversión y servicios financieros, ofreciendo solidez ante cambios económicos.
+Justificación: Bank of America es una de las principales instituciones financieras globales, con diversificación en banca minorista, inversión y servicios financieros, ofreciendo solidez ante cambios económicos.
+
+**Citigroup Inc. (C)**
+Sector: Servicios financieros
+Principales actividades: ofrece diversos productos y servicios financieros a consumidores, empresas, gobiernos e instituciones. 
+Racional: Citigroup tiene una amplia presencia internacional, especialmente en mercados emergentes, lo que aporta diversificación geográfica y exposición a crecimiento fuera de EE.UU.
+Justificación: Citigroup tiene una amplia presencia internacional, especialmente en mercados emergentes, lo que aporta diversificación geográfica y exposición a crecimiento fuera de EE.UU.
+
+
+
+```{r,include = FALSE,results='hide'}
+library(quantmod) # para descargar datos de Yahoo Finance
+library(tidyverse)# para manipulación de datos
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+
+
+
+cartera <- c("AAPL","MSFT","NVDA","AMZN","META","GOOGL","AVGO","GOOG","TSLA","WMT","INTC","JPM","F","NKE","GS","NFLX","CVX","ADBE","BAC","C") 
+
+getSymbols(cartera,src = "yahoo",from="2022-01-01", to="2025-03-01")
+
+d1 <- data.frame(P1=AAPL$AAPL.Close,P2=MSFT$MSFT.Close,P3=NVDA$NVDA.Close,P4=AMZN$AMZN.Close,P5=META$META.Close,P6=GOOGL$GOOGL.Close,P7=AVGO$AVGO.Close,P8=GOOG$GOOG.Close,P9=TSLA$TSLA.Close,P10=WMT$WMT.Close,P11=INTC$INTC.Close,P12=JPM$JPM.Close,P13=F$F.Close,P14=NKE$NKE.Close,P15=GS$GS.Close,P16=NFLX$NFLX.Close,P17=CVX$CVX.Close,P18=ADBE$ADBE.Close,P19=BAC$BAC.Close,P20=C$C.Close)
+
+# Asignar los nombres de las columnas sin el sufijo ".Close"
+colnames(d1) <- cartera
+```
+
+
+## Visualización de datos
+
+Con el objetivo de visualizar el comportamiento histórico de las emisoras seleccionadas, se elaboró un gráfico de líneas que muestra las series de tiempo de los precios de cierre de cada acción considerada en el análisis. Esta visualización permite identificar tendencias generales, episodios de volatilidad y comportamientos particulares que podrían influir en el cálculo del riesgo.
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+d1$Fecha <- index(AAPL)  
+
+# Convertir d1 a formato data.frame si no lo es (en caso de provenir de un objeto xts):
+d1_df <- data.frame(Fecha = d1$Fecha, coredata(d1)[ , !(names(d1) %in% "Fecha")])
+
+# Convertir a formato largo: una fila por cada fecha y ticker
+d1_larga <- pivot_longer(d1_df, 
+                         cols = -Fecha, 
+                         names_to = "Ticker", 
+                         values_to = "Close")
+
+# Graficar la serie de tiempo de precios de cierre
+ggplot(d1_larga, aes(x = Fecha, y = Close, color = Ticker)) +
+  geom_line(size = 0.8) +
+  labs(title = "Serie de Tiempo de Precios de Cierre",
+       x = "Fecha", 
+       y = "Precio de Cierre (USD)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Dado que el enfoque del análisis está centrado en la medición del riesgo, trabajar directamente con los precios de las acciones no es recomendable, ya que estos no suelen ser series estacionarias. La no estacionariedad implica que los precios presentan una tendencia (creciente o aleatoria), y no poseen una media ni varianza constantes en el tiempo. Esto representa un problema al aplicar modelos de Valor en Riesgo (VaR), los cuales requieren supuestos de estacionariedad para obtener resultados confiables.
+
+Por esta razón, en nuestro análisis utilizamos los *rendimientos simples*, definidos como:
+
+$$
+R_t = \frac{P_{t+1} - P_t}{P_t}
+$$
+$R_t$: Rendimiento del activo en el período t
+
+$P_t$: Precio del activo en el tiempo t
+
+$P_{t+1}$: Precio del activo en el tiempo t+1 (siguiente periodo)
+
+Y los graficamos para observar la diferencia con nuestras series de tiempo, nuevamente graficamos todas nuestras acciones, y aunque no se alcanza a observar claro que línea es de cada empresa, podemos ver que la serie ya es estacionaria.
+
+
+
+A continuación, se presenta el gráfico de los rendimientos simples para cada una de las acciones en el portafolio. Si bien debido a la densidad de la información no es posible identificar fácilmente cada serie individual, se puede observar visualmente que las series son estacionarias, con fluctuaciones alrededor de una media constante y sin tendencia aparente.
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+# Asegurar que tienes los precios
+d1_precios <- d1[ , 1:20]  # si las 20 columnas son precios
+
+# Obtener dimensiones
+n <- nrow(d1_precios)
+m <- ncol(d1_precios)
+
+# Calcular rendimientos logarítmicos o simples (usamos simples como tenías)
+Rend <- matrix(NA, nrow = n - 1, ncol = m)
+
+for(k in 1:m){
+  for(j in 1:(n-1)){
+    Rend[j, k] <- d1_precios[j+1, k] / d1_precios[j, k] - 1
+  }
+}
+# Convertir a data frame
+Rend_df <- as.data.frame(Rend)
+
+# Agregar fechas (omitir primera porque el primer rendimiento es NA)
+Rend_df$Fecha <- index(d1)[-1]
+
+# Asignar nombres correctos (tickers)
+colnames(Rend_df)[1:m] <- colnames(d1_precios)
+
+# Convertir a formato largo
+Rend_larga <- pivot_longer(Rend_df, 
+                           cols = -Fecha, 
+                           names_to = "Ticker", 
+                           values_to = "Rendimiento")
+
+# Graficar
+ggplot(Rend_larga, aes(x = Fecha, y = Rendimiento, color = Ticker)) +
+  geom_line(size = 0.8) +
+  labs(title = "Serie de Tiempo de Rendimientos Diarios",
+       x = "Fecha", 
+       y = "Rendimiento Diario") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+
+
+```
+
+
+# VaR No Paramétricos
+
+
+En esta sección se calcula el Valor en Riesgo (VaR) individual y para el portafolio, utilizando varios métodos no paramétricos. Estos métodos permiten estimar el riesgo de pérdida sin hacer suposiciones sobre la distribución específica de los rendimientos, lo cual es útil para la estimación del riesgo en situaciones donde los datos no siguen distribuciones conocidas o estándar.
+
+
+
+##  Simulación Histórica
+
+
+En esta sección se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método de Simulación Histórica, que estima el riesgo de pérdida futura basándose en los rendimientos históricos observados. Este enfoque no hace suposiciones sobre la distribución de los rendimientos y, por lo tanto, refleja directamente el comportamiento pasado del activo.
+
+El*VaR se calcula como el percentil inferior de los rendimientos históricos, lo que representa la pérdida máxima esperada en un nivel de confianza dado. El VaR para un nivel de confianza $\alpha$ es el valor tal que el área bajo la distribución de los rendimientos hasta este punto es igual a $\alpha$.
+
+El cálculo se realiza para cada emisora y para diferentes horizontes de tiempo: 1, 7, 15, 30, 60, 90 y 180 días. Además, se consideran tres niveles de confianza: 95%, 97% y 99%, lo que permite evaluar el riesgo bajo diversas condiciones.
+
+El VaR para cada emisora $i$ y horizonte de tiempo $t$ se define como:
+
+$$
+VaR_{\alpha} = \text{percentil}_{\alpha}(\text{rendimientos históricos})
+$$
+
+Por otro lado, la Pérdida Esperada (ES) se calcula como el valor promedio de las pérdidas que exceden el VaR. Esto proporciona una medida más completa del riesgo en situaciones extremas. La ES para un nivel de confianza $\alpha$ se calcula como el promedio de los rendimientos inferiores al VaR:
+
+$$
+ES_{\alpha} = \frac{1}{n} \sum_{i=1}^{n} \text{Pérdida}_i \quad \text{si} \quad \text{Pérdida}_i \leq VaR_{\alpha}
+$$
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamnete con cada nivel de confianza (95%, 97%, 99%).
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+# Cargar las librerías necesarias
+library(knitr)
+library(readxl)
+library(dplyr)
+
+# Cargar la tabla desde el archivo Excel
+tabla_Hist <- read_excel("Resultados VaR/tabla_Hist.xlsx")
+
+# Mostrar los primeros registros de forma bonita con kable
+kable(sample_n(tabla_Hist, 15), caption = "VaR Historico")
+
+```
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+# Filtrar por emisora
+df_p1 <- tabla_Hist %>% filter(Emisora == "P1")
+
+# Asegurar orden lógico del horizonte
+orden_horizonte <- c("1días", "7días", "15días", "30días", "60días", "90días", "180días")
+df_p1$Horizonte <- factor(df_p1$Horizonte, levels = orden_horizonte, ordered = TRUE)
+
+# Reestructurar los datos para graficar
+df_p1_long <- df_p1 %>%
+  pivot_longer(cols = starts_with("VaR_"), names_to = "Confianza", values_to = "VaR")
+
+# Graficar con leyenda en la parte inferior
+ggplot(df_p1_long, aes(x = Horizonte, y = VaR, color = Confianza, group = Confianza)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(title = "VaR por Simulación Histórica de APPL",
+       x = "Horizonte de tiempo",
+       y = "Valor en Riesgo (VaR)",
+       color = "Nivel de Confianza") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",                     # Mueve la leyenda abajo
+    legend.title = element_text(face = "bold")      # Opcional: negrita al título de leyenda
+  )
+
+```
+Este gráfico muestra cómo varía el Valor en Riesgo (VaR) de la emisora P1 en distintos horizontes de tiempo (1, 7, 15, 30, 60, 90 y 180 días) y para tres niveles de confianza (95%, 97%, 99%).
+
+-A mayor horizonte de tiempo, el VaR aumenta. Esto tiene sentido porque al extender el plazo, hay más exposición al riesgo y, por tanto, mayor posibilidad de una pérdida acumulada.
+
+-A mayor nivel de confianza, el VaR también aumenta. Esto refleja que si se quiere tener más certeza de no perder más que una cantidad determinada, se debe asumir un peor escenario (una mayor pérdida).
+
+-La forma ascendente del gráfico confirma que el riesgo crece en escenarios más extremos y en plazos más largos.
+
+
+## Simulación de Monte Carlo
+
+En esta sección se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método de Simulación Monte Carlo con supuestos normales, que estima el riesgo de pérdida futura generando un gran número de trayectorias posibles del precio del activo, basadas en la media y volatilidad histórica de los rendimientos diarios, bajo el supuesto de que estos siguen una distribución normal.
+
+Este enfoque permite modelar escenarios futuros aleatorios mediante la generación de números pseudoaleatorios, lo que proporciona una visión probabilística del comportamiento potencial del activo. A diferencia de la simulación histórica, esta técnica asume explícitamente una forma paramétrica (normal) para la distribución de los rendimientos, lo que puede facilitar el análisis pero también implica limitaciones si los rendimientos reales presentan asimetría o colas gruesas.
+
+
+Sea $X = (x_1, x_2, x_3, \dots, x_{n+1})$ el vector de precios del activo durante $n+1$ días.
+
+A partir de estos precios, se calcula el vector de **rendimientos porcentuales** como:
+
+$$
+y_i = \frac{x_{i+1}}{x_i} - 1, \quad \text{para } i = 1, 2, \dots, n
+$$
+
+Suponiendo que los rendimientos siguen una distribución Normal, se estiman los parámetros estadísticos:
+
+- Media muestral: $\hat{\mu}$
+- Desviación estándar: $\hat{\sigma}$
+
+Se simulan $N$ rendimientos futuros a partir de una función de distribución acumulada inversa, generando:
+
+$$
+w_i = F^{-1}(u_i; \mu, \sigma^2), \quad u_i \sim \mathcal{U}(0,1)
+$$
+
+El **Valor en Riesgo (VaR)** se calcula como el percentil inferior de la muestra $W = (w_1, w_2, \dots, w_N)$.
+
+La **Pérdida Esperada (ES)** se obtiene como el promedio de los valores que exceden ese percentil.
+
+
+
+El VaR se calcula como el percentil inferior de la muestra $W = (w_1, w_2, \dots, w_N)$, y la Pérdida Esperada como el promedio de los valores que exceden ese percentil.
+
+
+
+El cálculo se realiza para cada emisora y considera diferentes horizontes de tiempo: 1, 7, 15, 30, 60, 90 y 180 días. Asimismo, se evalúan tres niveles de confianza: 95%, 97% y 99%, permitiendo comparar el riesgo bajo distintos supuestos de severidad.
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamente con cada nivel de confianza (95%, 97%, 99%).
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+tabla_MCN <- read_excel("Resultados VaR/tabla_Montercarlo.xlsx")
+kable(sample_n(tabla_MCN, 15), caption = "VaR MCN")
+
+
+
+
+```
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_MCN %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% ")
+```
+
+
+
+Los resultados de la simulación Monte Carlo normal indican que el portafolio total (PT) sigue presentando el mayor Valor en Riesgo (VaR), lo que confirma su exposición a pérdidas extremas en escenarios adversos. Emisoras como WMT (P10), JPM (P12) y CVX (P17) también muestran un VaR elevado, lo que sugiere que, incluso bajo una distribución normal de rendimientos, estas acciones mantienen una alta sensibilidad a fluctuaciones del mercado.
+
+Las emisoras WMT, JPM, CVX tienen un alto VaR individual, asociado a su naturaleza cíclica (WMT en retail, JPM en banca, CVX en energía) y su reactividad a shocks económicos.
+
+En comparación con el VaR histórico, la simulación normal confirma tendencias similares a las observadas en el análisis histórico, aunque con posibles variaciones en la magnitud del riesgo debido a los supuestos de normalidad.
+
+
+
+
+
+
+## Simulación de Monte Carlo Laplace
+
+En esta sección se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método de Simulación Monte Carlo con distribución Laplace. A diferencia de la simulación histórica, este enfoque genera escenarios sintéticos basados en una distribución de probabilidad específica (en este caso, Laplace), que es adecuada para modelar rendimientos financieros con colas más pesadas que la distribución normal, capturando así mejor el riesgo de eventos extremos.
+
+La distribución Laplace (o doble exponencial) se caracteriza por su mayor densidad en las colas, lo que la hace útil para activos con alta curtosis y volatilidad. Su función de densidad de probabilidad está dada por:
+
+$$
+f(x \mid \mu, b) = \frac{1}{2b} \exp\left(-\frac{|x - \mu|}{b}\right)
+$$
+
+donde:
+- $\mu$ es la localización
+- $b > 0$ es el parámetro de escala
+
+El cálculo se realiza para cada emisora y considera diferentes horizontes de tiempo: 1, 7, 15, 30, 60, 90 y 180 días. Asimismo, se evalúan tres niveles de confianza: 95%, 97% y 99%, permitiendo comparar el riesgo bajo distintos supuestos de severidad.
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamente con cada nivel de confianza (95%, 97%, 99%).
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+tabla_MCL <- read_excel("Resultados VaR/tabla_Laplace.xlsx")
+kable(sample_n(tabla_MCL, 15), caption = "VaR MCL")
+
+
+```
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_MCL %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% ")
+
+```
+
+
+Los resultados de la simulación Monte Carlo bajo el supuesto de distribución Laplace revelan patrones de riesgo significativos en el portafolio analizado. Este enfoque, que considera colas más pesadas que la distribución normal, proporciona una estimación más conservadora del riesgo extremo. 
+
+Las emisoras con mayor riesgo fueron BAC (P19), INTC (P11) y ADBE (P18), la esta sensibilidad de BAC (P19) refleja la naturaleza cíclica del sector bancario (Bank of America) a cambios en tasas de interés y condiciones macroeconómicas, en INTC (P11) la volatilidad en semiconductores y competencia global impactan su perfil de riesgo y en ADBE (P18) muestra sensibilidad a cambios en gasto corporativo.
+
+En comparacion con los otros modelos la simulación Laplace muestra valores de riesgo más extremos que la normal para las mismas condiciones, tiene mayor dispersión en los resultados entre emisoras y ES significativamente más alto que en simulaciones normales
+
+
+
+
+## Simulación Bootstrapping
+
+En esta sección se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método de simulación Bootstrap. A diferencia de los enfoques paramétricos tradicionales, esta técnica no asume una distribución específica para los rendimientos financieros, sino que se basa en el remuestreo aleatorio de los datos históricos para generar escenarios sintéticos. Esto permite capturar de manera más fiel las características empíricas de los datos, incluyendo asimetrías, curtosis y dependencia temporal, proporcionando así estimaciones de riesgo más robustas, especialmente en mercados con comportamiento no normal.
+
+Para el remuestreo con reemplazo, dada una serie histórica de rendimientos $r_1, r_2, \dots, r_n$, generamos $B$ muestras bootstrap:
+
+$$
+r_1, r_2, \dots, r_n \quad \text{(donde cada } r_i \text{ se selecciona aleatoriamente)}
+$$
+
+
+Para cada muestra bootstrap, calculamos el percentil $\alpha$:
+
+   $$
+   \text{VaR}\alpha = \frac{1}{B}\sum{b=1}^B \text{percentil}_\alpha(r^*_b)
+   $$
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+tabla_B <- read_excel("Resultados VaR/tabla_bootstrap.xlsx")
+kable(sample_n(tabla_B, 15), caption = "VaR Bootstrapping")
+
+
+```
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_B %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% ")
+```
+
+
+Los resultados de la simulación revelan un riesgo controlado en el corto plazo para el portafolio total (PT), con pérdidas máximas esperadas (VaR95) del 0.93% y pérdidas extremas (ES99) mínimas (-0.039%), lo que indica una estructura diversificada y resiliente ante eventos adversos intradía. Sin embargo, se identificaron tres emisoras críticas que requieren atención prioritaria
+
+Las emisoras ADBE (P18), NKE(P14), y C(P20) presentan los valores más negativos de VaR al 99%, lo cual indica un mayor riesgo potencial de pérdida extrema bajo las condiciones simuladas. 
+
+Emisoras como WMT (P10) muestran VaR y ES mucho menos negativos, lo que indica una menor exposición al riesgo extremo bajo este modelo.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Alisamiento Exponencial
+
+
+
+En este proyecto se aplicó el modelo de Alisado Exponencial para estimar el riesgo del portafolio a partir de los rendimientos simples diarios. Este enfoque permitió capturar la volatilidad reciente del mercado, asignando más peso a los movimientos actuales y menos a los eventos pasados.
+
+El modelo se basó en una actualización diaria de la volatilidad, donde el peso de cada observación disminuyó de forma exponencial en el tiempo. Es decir, los rendimientos más recientes tuvieron mayor influencia sobre la estimación del riesgo.
+
+El cálculo de la volatilidad suavizada se realizó con la siguiente fórmula recursiva:
+
+$$
+\sigma_t^2 = \lambda \cdot \sigma_{t-1}^2 + (1 - \lambda) \cdot r_{t-1}^2
+$$
+
+donde:
+
+- $\sigma_t^2$ es la volatilidad estimada para el día $t$,
+- $r_{t-1}$ es el rendimiento simple del portafolio en el día anterior,
+- $\lambda$ es el parámetro de alisado, con $0 < \lambda < 1$.
+
+Una vez obtenida la volatilidad suavizada, se calculó el *Valor en Riesgo (VaR)* del portafolio bajo el supuesto de normalidad de los rendimientos:
+
+$$
+\text{VaR}_{\alpha,t} = z_\alpha \cdot \sigma_t
+$$
+
+donde $z_\alpha$ representa el cuantil de la distribución normal estándar asociado al nivel de confianza deseado (por ejemplo, $z_{0.95} = 1.645$).
+
+Además, se estimó el *Expected Shortfall (ES)*, que representa la pérdida esperada en caso de que el VaR sea superado:
+
+$$
+\text{ES}_{\alpha,t} = \sigma_t \cdot \frac{\phi(z_\alpha)}{1 - \alpha}
+$$
+
+donde $\phi(z_\alpha)$ es la función de densidad de la normal estándar evaluada en $z_\alpha$.
+
+En resumen, el modelo aplicado sobre los rendimientos simples del portafolio permitió estimar un VaR dinámico y adaptado a las condiciones recientes del mercado. Aunque suponer una distribución normal implica ciertas limitaciones, la flexibilidad del alisado exponencial ofreció una herramienta útil para evaluar el riesgo financiero de forma más sensible a los cambios del entorno.
+
+
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamnete con cada nivel de confianza (95%, 97%, 99%).
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+# Cargar las librerías necesarias
+library(knitr)
+library(readxl)
+library(dplyr)
+
+# Cargar la tabla desde el archivo Excel
+tabla_Alisado <- read_excel("Resultados VaR/tabla_Alisado.xlsx")
+
+# Mostrar los primeros registros de forma bonita con kable
+kable(sample_n(tabla_Alisado, 15), caption = "VaR Alisamiento Exponencial")
+
+
+```
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+
+# Asegurar que Horizonte sea numérico
+tabla_Alisado$Horizonte <- as.numeric(tabla_Alisado$Horizonte)
+
+# Filtrar para quitar la emisora "PT"
+tabla_filtrada <- tabla_Alisado %>% filter(Emisora != "PT")
+
+# Crear gráfico con valores absolutos del ES_99
+ggplot(tabla_filtrada, aes(x = Horizonte, y = abs(ES_99), color = Emisora)) +
+  geom_line(size = 1) +
+  labs(title = "ES 99% por Emisora en Diferentes Horizontes",
+       x = "Horizonte (días)",
+       y = "Valor Absoluto del ES (99%)",
+       color = "Emisora") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+El gráfico anterior muestra cómo varía el ES al 99% para cada emisora del portafolio en función del horizonte de tiempo considerado (1 a 180 días). Esta métrica refleja la pérdida esperada en los peores escenarios, es decir, en el 1% de las ocasiones en que las pérdidas superan el Valor en Riesgo (VaR).
+
+Podemos observar que, en general, el valor absoluto del ES tiende a incrementarse conforme el horizonte de tiempo se amplía. Esto es consistente con la teoría financiera, ya que una mayor exposición temporal usualmente implica mayor riesgo acumulado, tambien cabe recalcar que se excluyo al portafolio del grafico.
+
+Además, se identifican diferencias notables entre emisoras: algunas presentan curvas más empinadas, lo que indica una mayor sensibilidad al paso del tiempo en sus riesgos extremos. Esto podría deberse a una mayor volatilidad reciente, que el modelo de alisado exponencial captura otorgando más peso a los rendimientos recientes.
+
+La exclusión de la emisora "PT" permitió una mejor visualización del comportamiento de las demás acciones, ya que sus valores extremos distorsionaban la escala del gráfico. Esta decisión facilita la comparación relativa entre emisoras y permite identificar con mayor claridad cuáles contribuyen en mayor medida al riesgo extremo del portafolio.
+
+En resumen, este gráfico ilustra cómo el riesgo de cola del portafolio no es homogéneo entre emisoras ni constante en el tiempo, lo que resalta la importancia de considerar tanto el horizonte como la composición del portafolio en la gestión de riesgos.
+
+
+
+
+
+# VaR Paramétricos
+
+## VaR Paramétrico
+
+En esta sección del proyecto aplicamos el modelo de Valor en Riesgo (VaR) Paramétrico, esto para estimar la pérdida máxima esperada en un portafolio financiero bajo condiciones normales de mercado. Este enfoque lo usamos para los horizontes de tiempo 1, 7, 15, 30, 60, 90 y 180 días, y considerando los niveles de confianza: 95%, 97% y 99%.
+
+Para este módelo asuminos que los rendimientos de los activos siguen una distribución normal, y que es posible calcular el valor del portafolio como una función (lineal o no lineal) de los factores de riesgo.
+
+Asumiendo una distribución normal de los rendimientos, el VaR paramétrico se calcula como:
+
+$$
+VaR = \mu_p + z_{\alpha} \cdot \sigma_p
+$$
+Donde:
+
+$(\mu_p)$ es el rendimiento esperado del portafolio.
+$(\sigma_p)$ es la desviación estándar del portafolio.
+$(z_{\alpha})$ es el cuantil correspondiente al nivel de confianza 
+
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora utilizada, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para cada emisora aleatoriamnete con cada nivel de confianza (95%, 97%, 99%).
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+
+# Cargar las librerías necesarias
+library(knitr)
+library(readxl)
+library(dplyr)
+
+# Cargar la tabla desde el archivo Excel
+tabla_Parametrico <- read_excel("Resultados VaR/tabla_Parametrico.xlsx")
+
+# Mostrar los primeros registros de forma bonita con kable
+kable(sample_n(tabla_Parametrico, 15), caption = "VaR Paramétrico")
+
+```
+
+
+
+
+
+
+
+El gráfico anterior muestra un mapa de calor del Valor en Riesgo (VaR) correspondiente a la emisora MSFT (Microsoft), representada como P2. En el eje vertical se encuentra el horizonte temporal (expresado en días), mientras que el eje horizontal muestra el nivel de confianza (95%, 97% y 99%). Los valores de VaR están representados mediante una escala de colores, donde los tonos amarillo-verde indican valores bajos de riesgo y los tonos naranja-rojo indican valores más altos.
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE	}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+# Elegir la emisora
+emisora_objetivo <- "P2"  # <-- cámbialo por la que quieras
+
+# Filtrar y reestructurar solo esa emisora
+tabla_VaR_1emisora <- tabla_Parametrico %>%
+  filter(Emisora == emisora_objetivo) %>%
+  pivot_longer(cols = starts_with("VaR_"),
+               names_to = "Confianza",
+               values_to = "VaR") %>%
+  mutate(Confianza = gsub("VaR_", "", Confianza))
+
+# Crear el mapa de calor
+ggplot(tabla_VaR_1emisora, aes(x = Confianza, y = factor(Horizonte), fill = VaR)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "green", mid = "yellow", high = "red",
+                       midpoint = median(tabla_VaR_1emisora$VaR)) +
+  labs(title = paste("Mapa de Calor del VaR - Emisora:", emisora_objetivo),
+       x = "Nivel de Confianza", y = "Horizonte") +
+  theme_minimal()
+
+```
+
+
+
+-Incremento con el horizonte: Se observa un incremento del VaR a medida que el horizonte temporal se alarga. Esto es consistente con la teoría financiera, ya que la incertidumbre y el riesgo aumentan conforme se proyectan retornos a más largo plazo.
+
+-Incremento con el nivel de confianza: A mayores niveles de confianza, también se registran valores de VaR más altos. Esto se debe a que se está considerando un peor escenario en la cola de la distribución de pérdidas posibles.
+
+-Mayor concentración de riesgo: Los valores más altos de VaR (tonos rojos) se concentran en la esquina superior derecha del gráfico, lo que indica que, bajo un horizonte largo (180 días) y un nivel de confianza alto (99%), las pérdidas potenciales son mayores. En contraste, en horizontes cortos y niveles de confianza más bajos, el VaR se mantiene bajo.
+
+
+
+
+## Delta Normal
+
+Aquí se presenta el cálculo del Valor en Riesgo (VaR) y la Pérdida Esperada (ES) utilizando el método Delta Normal. Este enfoque paramétrico asume que los rendimientos financieros siguen una distribución normal y que las pérdidas del portafolio pueden aproximarse linealmente en función de los cambios en los factores de riesgo.
+
+Bajo esta metodología, se calcula el VaR usando la fórmula:
+
+$$
+\text{VaR}_\alpha = z_\alpha \cdot \sigma_P \cdot \sqrt{h}
+$$
+
+donde:
+
+- $z_\alpha$: cuantil de la distribución normal estándar para el nivel de confianza $\alpha$,
+- $\sigma_P$: volatilidad del portafolio,
+- $h$: horizonte temporal (en días).
+
+La volatilidad del portafolio se estima como:
+
+$$
+\sigma_P = \sqrt{w^\top \Sigma w}
+$$
+
+donde $w$ es el vector de pesos del portafolio y $\Sigma$ es la matriz de covarianzas entre los activos.
+
+Para la Pérdida Esperada (ES), se utiliza la fórmula:
+
+$$
+\text{ES}_\alpha = \frac{\sigma_P}{1 - \alpha} \cdot \phi(z_\alpha)
+$$
+
+donde $\phi(z_\alpha)$ es la función de densidad de la normal estándar evaluada en $z_\alpha$.
+
+El cálculo se realiza para cada emisora y considera diferentes horizontes de tiempo: 1, 7, 15, 30, 60, 90 y 180 días. Asimismo, se evalúan tres niveles de confianza: 95%, 97% y 99%.
+
+A continuación, se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para una muestra aleatoria de emisoras.
+
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+
+library(readxl)
+library(dplyr)
+library(knitr)
+
+# Leer archivo de resultados
+tabla_DN <- read_excel("Resultados VaR/tabla_Delta.xlsx")
+
+# Mostrar muestra aleatoria de 15 emisoras
+kable(sample_n(tabla_DN, 15), caption = "VaR Delta Normal (muestra aleatoria de emisoras)")
+
+```
+
+
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+# Selección del Top 10 emisoras con mayor VaR al 99%
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_DN %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% (Delta Normal)")
+```
+
+
+Los resultados de la metodología Delta Normal muestran valores de riesgo consistentes con una estructura de rendimientos normalmente distribuidos. Sin embargo, este enfoque tiende a subestimar el riesgo en presencia de asimetrías o colas pesadas, lo cual puede observarse en comparación con modelos más flexibles como Cornish-Fisher o simulaciones con distribuciones de colas gruesas.
+
+Emisoras como JPM (P12), CVX (P17) y META (P4) presentan valores elevados de VaR al 99%, lo que indica una mayor sensibilidad a fluctuaciones adversas del mercado en horizontes largos. El portafolio total (PT) también se encuentra entre los valores más altos, confirmando su exposición agregada al riesgo sistémico.
+
+En resumen, aunque el modelo Delta Normal es simple y computacionalmente eficiente, sus supuestos restrictivos pueden limitar su aplicabilidad en mercados altamente volátiles o no normales.
+
+
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyr)
+
+# Convertir de formato ancho a largo para las columnas de VaR
+tabla_VaR_larga <- tabla_DN %>%
+  pivot_longer(cols = starts_with("VaR_"),
+               names_to = "Nivel_Confianza",
+               values_to = "VaR") %>%
+  mutate(Nivel_Confianza = gsub("VaR_", "", Nivel_Confianza))
+
+# Graficar boxplot
+ggplot(tabla_VaR_larga, aes(x = factor(Nivel_Confianza), y = VaR)) +
+  geom_boxplot(fill = "steelblue", alpha = 0.7) +
+  labs(
+    title = "Distribución del VaR por Nivel de Confianza",
+    x = "Nivel de Confianza",
+    y = "VaR"
+  ) +
+  theme_minimal()
+
+
+```
+
+
+
+El gráfico muestra la distribución del Valor en Riesgo (VaR) estimado mediante el modelo Delta Normal, agrupado por nivel de confianza: 95%, 97% y 99%. Cada caja representa la distribución del VaR calculado para distintas emisoras y horizontes de tiempo bajo cada nivel de confianza.
+
+-Valores negativos de VaR:
+Todos los valores son negativos, lo cual es esperado, ya que el VaR representa una pérdida potencial. Un valor de -3, por ejemplo, implica que en el peor 5% de los casos (si el nivel de confianza es 95%), la pérdida esperada no superará el 3%.
+
+-Mayor magnitud de pérdidas a mayor confianza:
+A medida que el nivel de confianza aumenta (de 95% a 99%), la magnitud negativa del VaR se incrementa. Esto refleja un mayor umbral de protección: cuanto más alto el nivel de confianza, mayor es la pérdida potencial que se anticipa en escenarios extremos.
+
+-Distribución más dispersa en niveles altos:
+En el nivel de confianza del 99%, se observa una mayor dispersión y valores mínimos más extremos (caídas más pronunciadas), lo que es coherente con el hecho de que se capturan los eventos más adversos.
+
+-Valores atípicos (outliers):
+Los puntos individuales por debajo de las cajas representan valores atípicos, que pueden deberse a emisoras con alta volatilidad o ciertos horizontes más riesgosos. Estos son importantes porque indican posibles focos de riesgo elevado.
+
+
+
+## Extensión de Cornish-Fisher
+
+Este método permite ajustar la estimación del Valor en Riesgo (VaR) cuando la distribución de los rendimientos financieros no es perfectamente normal, incorporando la asimetría (skewness) y la curtosis (kurtosis) observadas en los datos empíricos.
+
+La fórmula del VaR ajustado mediante la expansión de Cornish-Fisher es:
+
+$$
+\text{VaR}_\alpha = \left( z_\alpha + \frac{1}{6}(z_\alpha^2 - 1)s + \frac{1}{24}(z_\alpha^3 - 3z_\alpha)k - \frac{1}{36}(2z_\alpha^3 - 5z_\alpha)s^2 \right) \cdot \sigma_P \cdot \sqrt{h}
+$$
+
+donde:
+
+- $z_\alpha$: cuantil de la distribución normal estándar para el nivel de confianza $\alpha$,
+- $s$: asimetría (skewness) de los rendimientos,
+- $k$: exceso de curtosis de los rendimientos,
+- $\sigma_P$: desviación estándar de los rendimientos del portafolio,
+- $h$: horizonte temporal.
+
+Este ajuste permite tener en cuenta distribuciones no normales, como aquellas con colas pesadas o sesgo, y proporciona estimaciones más realistas del riesgo extremo.
+
+A continuación se presentan algunos de los resultados obtenidos para cada emisora del S&P 500, considerando los diferentes horizontes de tiempo y niveles de confianza. La tabla muestra el VaR y la ES para una muestra aleatoria de emisoras.
+
+
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+library(readxl)
+library(dplyr)
+library(knitr)
+
+# Leer archivo de resultados
+tabla_CF <- read_excel("Resultados VaR/VaR_Cornish.xlsx")
+
+# Mostrar muestra aleatoria de 15 emisoras
+kable(sample_n(tabla_CF, 15), caption = "VaR Cornish-Fisher (muestra aleatoria de emisoras)")
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+
+
+
+# Selección del Top 10 emisoras con mayor VaR al 99%
+columna_var <- "VaR_99"
+
+top10_var_unico <- tabla_CF %>%
+  arrange(desc(.data[[columna_var]])) %>%
+  distinct(Emisora, .keep_all = TRUE) %>%
+  slice(1:10)
+
+kable(top10_var_unico, caption = "Top 10 VaR al 99% (Cornish-Fisher)")
+```
+
+
+
+Los resultados del modelo Cornish-Fisher muestran una mayor dispersión en los valores de VaR y ES en comparación con el modelo Delta Normal, reflejando la capacidad de este enfoque para capturar las propiedades reales de la distribución de los rendimientos financieros.
+
+Emisoras como META (P4), C (P20) y AMD (P16) presentan valores elevados de riesgo, lo cual puede atribuirse a una alta curtosis o asimetría en sus rendimientos diarios. El portafolio total (PT) también muestra una posición destacada, aunque ligeramente menor que en la simulación Laplace.
+
+Este modelo mejora la estimación de eventos extremos respecto al Delta Normal, pero sigue siendo una aproximación basada en momentos. Su efectividad depende en gran medida de la estabilidad de los parámetros empíricos y la calidad de los datos.
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+# Asegurar que Horizonte sea numérico
+tabla_CF$Horizonte <- as.numeric(tabla_CF$Horizonte)
+
+# Filtrar para quitar la emisora "PT"
+tabla_filtrada <- tabla_CF %>% filter(Emisora != "PT")
+
+# Crear gráfico con valores absolutos del ES_99
+ggplot(tabla_filtrada, aes(x = Horizonte, y = abs(ES_99), color = Emisora)) +
+  geom_line(size = 1) +
+  labs(title = "ES 99% por Emisora en Diferentes Horizontes - Modelo Cornish-Fisher",
+       x = "Horizonte (días)",
+       y = "Valor Absoluto del ES (99%)",
+       color = "Emisora") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "bottom"
+  )
+```
+El gráfico de Pérdida Esperada (ES) al 99% bajo el modelo Cornish-Fisher revela cómo evoluciona el riesgo extremo a través de distintos horizontes temporales para cada emisora. Se observa que, en general, el riesgo tiende a incrementarse con el horizonte de inversión, reflejando la acumulación de incertidumbre a lo largo del tiempo.
+
+Las emisoras con curvas más empinadas indican una mayor sensibilidad a los cambios en el plazo, lo que sugiere una mayor volatilidad o asimetría en su distribución de rendimientos. Por otro lado, algunas emisoras presentan una evolución más estable del ES, lo que refleja una menor exposición a colas extremas bajo este modelo.
+
+Este gráfico permite identificar de forma visual qué activos concentran más riesgo extremo y cómo varía dicha exposición en diferentes escalas temporales. En resumen, el modelo Cornish-Fisher ofrece una estimación más realista y diferenciada del riesgo extremo frente a modelos que asumen normalidad simétrica, siendo especialmente útil para análisis de riesgo a mediano y largo plazo.
+
+
+
+
+# Comparación de modelos
+
+Generamoos una tabla con todos los datos de los modelos de VaR y ES obtenidos en las secciones anteriores. Esta tabla incluye los resultados de los métodos de Alisado Exponencial, Bootstrap, Cornish-Fisher, Delta Normal, Laplace, Monte Carlo, Paramétrico y Simulación Histórica. La tabla se presenta solo con 15 datos seleccionados aleatoriamente para facilitar la visualización, pero se puede ampliar a todos los datos si es necesario.
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE}
+# Cargar las librerías necesarias
+
+
+# Cargar las tablas desde los archivos Excel
+tabla_Alisado <- read_excel("Resultados VaR/tabla_Alisado.xlsx")
+tabla_bootstrap <- read_excel("Resultados VaR/tabla_bootstrap.xlsx")
+tabla_Delta <- read_excel("Resultados VaR/tabla_Delta.xlsx")
+tabla_Hist <- read_excel("Resultados VaR/tabla_Hist.xlsx")
+tabla_Laplace <- read_excel("Resultados VaR/tabla_Laplace.xlsx")
+tabla_Montercarlo <- read_excel("Resultados VaR/tabla_Montercarlo.xlsx")
+tabla_Parametrico <- read_excel("Resultados VaR/tabla_Parametrico.xlsx")
+VaR_Cornish <- read_excel("Resultados VaR/VaR_Cornish.xlsx")
+
+
+estandarizar_tabla <- function(tabla, nombre_modelo) {
+  
+  # Asegurarse de que Horizonte sea character
+  tabla <- tabla %>% mutate(Horizonte = as.character(Horizonte))
+  
+  # Si tiene NumSim, filtrar solo si == 20000
+  if ("NumSim" %in% colnames(tabla)) {
+    tabla <- tabla %>% filter(NumSim == 20000)
+  } else {
+    tabla$NumSim <- NA  # agregar columna para unificación posterior
+  }
+  
+  # Agregar columna Modelo
+  tabla <- tabla %>%
+    mutate(Modelo = nombre_modelo) %>%
+    select(Emisora, Horizonte, VaR_95, VaR_97, VaR_99,
+           ES_95, ES_97, ES_99, NumSim, Modelo)
+  
+  return(tabla)
+}
+
+tabla_Alisado      <- estandarizar_tabla(tabla_Alisado, "Alisado Exponencial")
+tabla_bootstrap    <- estandarizar_tabla(tabla_bootstrap, "Bootstrap")
+tabla_Laplace      <- estandarizar_tabla(tabla_Laplace, "Laplace")
+tabla_Montercarlo  <- estandarizar_tabla(tabla_Montercarlo, "MonteCarlo")
+tabla_Parametrico  <- estandarizar_tabla(tabla_Parametrico, "Paramétrico")
+VaR_Cornish        <- estandarizar_tabla(VaR_Cornish, "Cornish-Fisher")
+tabla_Delta        <- estandarizar_tabla(tabla_Delta, "Delta Normal")
+tabla_Hist         <- estandarizar_tabla(tabla_Hist, "Simulación Histórica")
+
+tabla_comparativa <- bind_rows(
+  tabla_Alisado, tabla_bootstrap, tabla_Delta, tabla_Hist, 
+  tabla_Laplace, tabla_Montercarlo, tabla_Parametrico, VaR_Cornish
+)
+
+tabla_comparativa$NumSim <- NULL
+
+kable(sample_n(tabla_comparativa, 15), caption = "Resumen de modelos con muestra aleatoria")
+```
+
+
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE}
+nueva <- tabla_comparativa %>%
+  group_by(Modelo, Horizonte) %>%
+  summarise(
+    Prom_VaR95 = mean(VaR_95, na.rm = TRUE),
+    Prom_VaR99 = mean(VaR_99, na.rm = TRUE),
+    Prom_ES95  = mean(ES_95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+kable(nueva, caption = "VaR Resumen por promedios")
+
+```
+
+La tabla presentada compara los resultados obtenidos de distintas metodologías de estimación de Valor en Riesgo  incluyendo los enfoques de Alisado Exponencial, Bootstrap, Cornish-Fisher, Delta Normal, Laplace, Monte Carlo, Paramétrico y Simulación Histórica— bajo diferentes horizontes temporales . Las métricas reportadas incluyen las estimaciones promedio de VaR al 5% (Prom. VaR05), VaR al 1% (Prom. VaR01) y el Expected Shortfall al 5% (Prom. ES95).
+
+En términos generales, se observa que, a medida que se incrementa el horizonte temporal, los valores absolutos de VaR y ES tienden a incrementarse, lo cual es consistente con la intuición financiera de que el riesgo acumulado crece con el tiempo.
+
+Por ejemplo, en el caso del modelo Delta Normal, el VaR al 5% pasa de -0.0456 en un horizonte de 1 día a -0.5286 en 90 días, mientras que el Expected Shortfall también aumenta en magnitud. Este comportamiento también se repite en modelos como la Simulación Histórica, donde se observa un VaR05 promedio de 0.1341 en un horizonte de 60 días, aumentando a 0.7352 en un horizonte de 960 días.
+
+Los modelos basados en Simulación Histórica y Monte Carlo presentan valores positivos en algunos casos, lo cual puede deberse al uso de series históricas o escenarios simulados en los que los rendimientos promedio fueron positivos. Esto puede implicar una sobreestimación del rendimiento esperado o un sesgo en los datos utilizados.
+
+Por otro lado, los modelos paramétricos como el Delta Normal y Laplace tienden a presentar estimaciones más conservadoras (valores más negativos de VaR y ES), especialmente en horizontes largos, lo cual refleja la sensibilidad de estos métodos a los supuestos de distribución de retornos.
+
+```{r, message=FALSE, warning=FALSE,echo = FALSE}
+
+tabla <- data.frame(
+  Modelo = c("Alisado Exponencial", "Bootstrap", "Cornish-Fisher", "Delta Normal", 
+             "Laplace", "Monte Carlo", "Paramétrico", "Simulación Histórica"),
+  Enfoque = c("Ponderación exponencial", "Remuestreo", "Expansión de Edgeworth", 
+              "Distribución Normal", "Distribución Laplace", "Simulación estocástica", 
+              "Supuestos estáticos", "Datos reales pasados"),
+  Comportamiento = c("VaR y ES muy negativos, especialmente en horizontes largos",
+                     "Valores moderados; depende del tamaño muestral",
+                     "VaR menos extremos que otros modelos paramétricos",
+                     "No capta colas pesadas; subestima extremos",
+                     "VaR y ES muy negativos; colas pesadas",
+                     "VaR positivo en varios horizontes",
+                     "Resultados muy variables; algunos positivos",
+                     "VaR y ES positivos en horizontes largos"),
+  Riesgo = c("Sobreestima el riesgo", 
+             "Neutral", 
+             "Subestima el riesgo", 
+             "Subestima el riesgo", 
+             "Sobreestima el riesgo", 
+             "Subestima fuertemente el riesgo", 
+             "Subestima o inconsistente", 
+             "Subestima el riesgo")
+)
+
+kable(tabla, caption = "Comparación cualitativa de los modelos de VaR aplicados")
+
+```
+
+
+
+
+
+
+
+
+## Conclusiones 
+
+A lo largo de este proyecto, realizamos un análisis exhaustivo del riesgo de mercado mediante el cálculo del Valor en Riesgo  y el Expected Shortfall  para un portafolio compuesto por 20 acciones del índice S&P 500, abarcando el periodo de enero de 2022 a marzo de 2025. La selección de las emisoras se fundamentó en nuestros gustos por la tecnologia lo cual no resulto a la perfección ya que son acciones que estan muy relacionadas y no permitió que nuestro portafolio se diversificara.
+
+Aplicamos modelos de VaR tanto no paramétricos (Simulación Histórica, Simulación Monte Carlo con distribuciones Normal y Laplace, Bootstrapping y Alisado Exponencial) como paramétricos (VaR clásico, Delta Normal y Cornish-Fisher). Todo el análisis fue desarrollado en el lenguaje 
+R y python buscando sacar lo mejor da cada lenguaje,lo cual nos permitió automatizar procesos, realizar simulaciones masivas y obtener resultados detallados para distintos niveles de confianza y horizontes temporales .
+
+En conclusión, este trabajo nos permitió aplicar y contrastar diferentes enfoques de medición del riesgo financiero, profundizando en las ventajas y limitaciones de cada uno. Aprendimos que no existe un modelo único aplicable a todos los contextos, y que una buena práctica en la gestión de riesgos consiste en comparar y validar varios enfoques, con el fin de tomar decisiones informadas ante la incertidumbre inherente de los mercados financieros.
+
+
+
+
+
+## Aprendizajes
+
+-Comparación entre metodologías:
+Observamos que los modelos no paramétricos ofrecen mayor flexibilidad, ya que no requieren supuestos de normalidad, aunque dependen fuertemente de la calidad de los datos históricos. Por otro lado, los modelos paramétricos fueron más sencillos computacionalmente, pero en varias ocasiones tendieron a subestimar el riesgo, especialmente en presencia de distribuciones de retornos con colas pesadas.
+
+-Importancia del horizonte y nivel de confianza:
+Confirmamos que, como es de esperarse, tanto el VaR como el ES aumentan con horizontes temporales más largos y con niveles de confianza más elevados, reflejando un mayor riesgo acumulado.
+
+-Elección del modelo y sus implicaciones:
+Identificamos que la selección del modelo de VaR tiene un impacto directo en la gestión del riesgo. Modelos que sobreestiman el riesgo, como el de Alisado Exponencial o Laplace, pueden inducir decisiones conservadoras, mientras que otros, como Delta Normal o Monte Carlo mal calibrado, pueden subestimar el riesgo, generando una falsa sensación de seguridad.
+
+-Desafíos con la simulación Monte Carlo:
+Aunque es una técnica robusta en teoría, su eficacia depende de una buena especificación de parámetros. En algunos casos, los resultados obtenidos fueron inconsistentes (por ejemplo, VaR positivo), lo que resaltó la necesidad de validar cuidadosamente cada modelo.
+
+-Relevancia del Expected Shortfall (ES):
+Incorporar el ES fue fundamental para complementar el análisis, ya que permite evaluar la magnitud de las pérdidas más allá del umbral de VaR. Esto fue especialmente útil con modelos que consideran colas pesadas, proporcionando una medición más completa del riesgo extremo.
+
+
+
+
