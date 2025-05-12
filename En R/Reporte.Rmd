@@ -20,6 +20,14 @@ output:
 An investment portfolio was constructed consisting of 20 stocks from companies belonging to the S&P 500 index, selected according to criteria of sector diversification and economic relevance, for the period from January 2022 to March 2025. Historical price data were obtained from the financial platform Yahoo Finance. For each selected issuer, a description of its economic sector, its main operating activities, and a justification for its inclusion in the portfolio are provided, considering its market representativeness and relevance within the risk analysis.
 
 
+#  Introducción
+
+En el ámbito financiero, la gestión de riesgos constituye una de las actividades más importantes para la toma de decisiones estratégicas. Una de las herramientas más utilizadas para cuantificar el riesgo de mercado es el Valor en Riesgo (VaR, por sus siglas en inglés), el cual mide la pérdida máxima esperada de un portafolio financiero en un horizonte temporal dado, bajo un nivel de confianza específico. Complementariamente, se utiliza el Expected Shortfall (ES), también conocido como pérdida esperada, que estima la pérdida promedio en los escenarios en los que el VaR es superado.
+
+En este trabajo se realiza una estimación del VaR y del ES mediante simulación Monte Carlo, asumiendo que los rendimientos siguen una distribución normal. Se aplica esta metodología a una serie de emisoras financieras, considerando distintos niveles de confianza (95%, 97.5% y 99%) y diferentes horizontes temporales (1, 5 y 10 días).
+
+El objetivo principal es identificar cuáles emisoras presentan mayor exposición al riesgo bajo diferentes escenarios, y analizar el comportamiento del riesgo agregado del portafolio completo. Esta información permite inferir decisiones clave para estrategias de cobertura, asignación de activos y control de riesgos.
+
 # Selección de Activos
 
 ## Descripición de Activos
