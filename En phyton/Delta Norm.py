@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun May 11 16:55:46 2025
-
-@author: Domingo
-"""
+#%%
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
